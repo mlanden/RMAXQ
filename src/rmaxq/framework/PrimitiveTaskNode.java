@@ -52,7 +52,7 @@ public abstract class PrimitiveTaskNode implements TaskNode {
         List<Action> gaList = ActionUtils.allApplicableActionsForTypes(Arrays.asList((ActionType)actionType), s);
         List<GroundedTask> gtList = new ArrayList<GroundedTask>();
         for(Action ga:gaList){
-            gtList.add(new GroundedTask(this, ga, rf));
+            gtList.add(new GroundedTask(this, ga));
         }
         return gtList;
     }

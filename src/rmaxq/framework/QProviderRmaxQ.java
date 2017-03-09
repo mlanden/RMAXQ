@@ -43,8 +43,11 @@ public class QProviderRmaxQ implements QProvider, MDPSolverInterface{
 	}
 
 	public double value(State s) {
-		if(!task.t.isTaskPrimitive() && task.getTerminalFunction().isTerminal(s))
-			return task.pseudoRewardFunction(s);
+		if(!task.t.isTaskPrimitive() && task.t.terminal(s, task.getAction())){
+			NonPrimitiveTaskNode npt = (NonPrimitiveTaskNode)task.t;
+			return npt.pseudoRewardFunction(s, task.getAction());
+		}
+				
 		return QProvider.Helper.maxQ(this, s);
 	}
 

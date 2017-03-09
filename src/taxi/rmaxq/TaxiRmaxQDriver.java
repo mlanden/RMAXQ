@@ -1,5 +1,6 @@
 package taxi.rmaxq;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import burlap.behavior.singleagent.Episode;
@@ -9,6 +10,7 @@ import burlap.behavior.singleagent.auxiliary.performance.PerformanceMetric;
 import burlap.behavior.singleagent.auxiliary.performance.TrialMode;
 import burlap.behavior.singleagent.learning.LearningAgent;
 import burlap.behavior.singleagent.learning.LearningAgentFactory;
+import burlap.behavior.singleagent.learning.tdmethods.QLearning;
 import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.action.ActionType;
 import burlap.mdp.core.state.State;
@@ -39,6 +41,7 @@ public class TaxiRmaxQDriver {
 
         TaxiDomain TDGen = new TaxiDomain(taxiRF, taxiTF);
         
+        TDGen.setTransitionDynamicsLikeFickleTaxiProlem();
         TDGen.setFickleTaxi(false);
         TDGen.setIncludeFuel(false);
         OOSADomain td = TDGen.generateDomain();
@@ -48,7 +51,8 @@ public class TaxiRmaxQDriver {
         
         List<TaxiPassenger> passengers = ((TaxiState)s).passengers;
         List<TaxiLocation> locations = ((TaxiState)s).locations;
-        String[] locs = new String[locations.size()], passengerNames = new String[passengers.size()];
+        String[] locationNames = new String[locations.size()];
+        String[] passengerNames = new String[passengers.size()];
         int i = 0;
         for(TaxiPassenger pass : passengers){
         	passengerNames[i] = pass.name();
@@ -56,9 +60,10 @@ public class TaxiRmaxQDriver {
         }
         i = 0;
         for(TaxiLocation loc : locations){
-        	locs[i] = loc.name();
+        	locationNames[i] = loc.name();
         	i++;
         }
+        
         
         ActionType east = td.getAction(TaxiDomain.ACTION_EAST);
         ActionType west = td.getAction(TaxiDomain.ACTION_WEST);
@@ -75,13 +80,14 @@ public class TaxiRmaxQDriver {
         TaskNode tdp = new PutDownTaskNode(dropoff);
         
         TaskNode[] navigateSubTasks = new TaskNode[]{te, tw, ts, tn};
-        
-        TaskNode navigate = new NavigateTaskNode(locs, navigateSubTasks, td);
+
+
+        TaskNode navigate = new NavigateTaskNode("navigate", locationNames, navigateSubTasks);
         TaskNode[] getNodeSubTasks = new TaskNode[]{tp,navigate};
         TaskNode[] putNodeSubTasks = new TaskNode[]{tdp,navigate};
         
         TaskNode getNode = new GetTaskNode(td, passengerNames, getNodeSubTasks);
-        TaskNode putNode = new PutTaskNode(td, passengerNames, locs, putNodeSubTasks);
+        TaskNode putNode = new PutTaskNode(passengerNames, passengerNames, putNodeSubTasks);
         
         TaskNode[] rootTasks = new TaskNode[]{getNode, putNode};
         
@@ -115,10 +121,29 @@ public class TaxiRmaxQDriver {
 		exp.startExperiment();
 	}
 	
+	public static void QlearningState(){
+		TaxiTerminationFunction tf = new TaxiTerminationFunction();
+		TaxiRewardFunction rf = new TaxiRewardFunction(1, tf);
+		TaxiDomain TDGen = new TaxiDomain(rf, tf);
+		
+		TDGen.setFickleTaxi(false);
+		TDGen.setIncludeFuel(false);
+		OOSADomain td = TDGen.generateDomain();
+		State s = TaxiDomain.getClassicState(td, false);
+		env = new SimulatedEnvironment(td, s);
+		QLearning ql  = new QLearning(td, .99, new SimpleHashableStateFactory(), 0, .01);
+		Episode e = ql.runLearningEpisode(env);
+		e.write("output/episode_1");
+		
+		Visualizer v = TaxiVisualizer.getVisualizer(5, 5);
+		new EpisodeSequenceVisualizer(v, domain, "output/" );
+
+	}
 	public static void main(String[] args) {
 		TaskNode root = setupHeirarcy();
 		HashableStateFactory hs = new SimpleHashableStateFactory();
 		
+//		QlearningState();
 		LearningAgent RmaxQ = new RmaxQLearningAgent(root, hs, 100, 3, 0.01);
  		Episode e = RmaxQ.runLearningEpisode(env);
 		e.write("output/episode_1");

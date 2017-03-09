@@ -30,12 +30,8 @@ public class RootTaskNode extends NonPrimitiveTaskNode {
         this.taskNodes = children;
         this.domain = domainIn;
 
-        this.tf = new TaxiTerminationFunction();
-        RewardFunction taxiRF = new TaxiRewardFunction(numPas, tf);
-        
         for(String[] param:params){
-            groundedTasks.add(new GroundedTask(this, new SimpleAction(name+":"+param), taxiRF
-            		));
+            groundedTasks.add(new GroundedTask(this, new SimpleAction(name+":"+param)));
         }
     }
 
@@ -54,12 +50,5 @@ public class RootTaskNode extends NonPrimitiveTaskNode {
     @Override
     public List<GroundedTask> getApplicableGroundedTasks(State s) {
         return groundedTasks;
-    }
-
-    @Override
-    public double pseudoRewardFunction(State s){
-        if(tf.isTerminal(s))
-        	return 20;
-        return -1;
     }
 }

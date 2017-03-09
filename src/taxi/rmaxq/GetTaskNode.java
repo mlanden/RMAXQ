@@ -31,10 +31,9 @@ public class GetTaskNode extends NonPrimitiveTaskNode{
         this.taskNodes = children;
         this.passengers = passes;
         
-        RewardFunction rf = new UniformCostRF();
         gts = new ArrayList<GroundedTask>();
         for(String pass : passengers){
-        	gts.add(new GroundedTask(this, new SimpleAction(ACTION_GET + "_" + pass), rf));
+        	gts.add(new GroundedTask(this, new SimpleAction(ACTION_GET + "_" + pass)));
         }
     }
 
@@ -61,8 +60,8 @@ public class GetTaskNode extends NonPrimitiveTaskNode{
     public List<GroundedTask> getApplicableGroundedTasks(State s) {
         List<GroundedTask> gt = new ArrayList<GroundedTask>();
         for(GroundedTask g: gts){
-//        	if(!terminal(s, g.getAction()))
-        		gt.add(g);
+        	if(!terminal(s, g.getAction()))
+        	gt.add(g);
         }
         return gt;
     }

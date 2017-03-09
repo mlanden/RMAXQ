@@ -3,6 +3,7 @@ package rmaxq.framework;
 
 import burlap.behavior.policy.Policy;
 import burlap.mdp.core.TerminalFunction;
+import burlap.mdp.core.action.Action;
 import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.model.RewardFunction;
 import burlap.mdp.singleagent.oo.OOSADomain;
@@ -73,8 +74,10 @@ public abstract class NonPrimitiveTaskNode implements TaskNode{
 
     // this is the reward function for the grounded task
     
-    public double pseudoRewardFunction(State s){
-        return 0.;
+    public double pseudoRewardFunction(State s, Action a){
+        if(terminal(s, a))
+        	return 100;
+        return 0;
     }
 
 

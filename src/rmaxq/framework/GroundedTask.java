@@ -19,73 +19,19 @@ public class GroundedTask {
 
     Action action;
 
-    int level = 0;
-
-    RewardFunction rf;
-    
-    public TaskNode getT() {
-        return t;
-    }
-
     public Action getAction() {
         return action;
     }
 
-
-//    Object params;
-
-
-    public GroundedTask(TaskNode t, ActionType at, String[] params, RewardFunction rf){
-        this.t = t;
-        this.action = new ObjectParameterizedActionType.SAObjectParameterizedAction(at.typeName(), params);
-        this.rf = rf;
-    }
-
-    public GroundedTask(TaskNode t, Action a, RewardFunction rf){
+    public GroundedTask(TaskNode t, Action a){
         this.t = t;
         this.action = a;
-        this.rf = rf;
     }
 
-    public GroundedTask(TaskNode t, Action a, RewardFunction rf, int level){
-        this.t = t;
-        this.action = a;
-        this.level = level;
-        this.rf = rf;
-    }
-
-    public void setLevel(int level){
-        this.level  =level;
-    }
 
     public String actionName(){
-        String s = action.actionName();
-        if(action instanceof ObjectParameterizedAction){
-            String[] params = ((ObjectParameterizedAction)action).getObjectParameters();
-            for(String param :params){
-                s+="_"+param;
-            }
-        }
-        s+=level;
-        return s;
+        return action.actionName();
     }
-
-    public TerminalFunction getTerminalFunction(){
-        return new TerminalFunction() {
-            @Override
-            public boolean isTerminal(State state) {
-                return t.terminal(state,action);
-            }
-        };
-    }
-
-    @Override
-    public int hashCode() {
-        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder(31, 7);
-        hashCodeBuilder.append(t).append(action);
-        return hashCodeBuilder.toHashCode();
-    }
-
 
     @Override
     public boolean equals(Object other) {
@@ -98,22 +44,12 @@ public class GroundedTask {
         }
 
 
-
         GroundedTask o = (GroundedTask) other;
 
 
-        if(this.level!=o.level){
-                return false;
-        }
-
-        // check if same task node
         if (!this.t.name().equals(o.t.name())) {
             return false;
         }
-
-//        if(!this.action.equals(o.action)){
-//            return false;
-//        }
 
         if(!this.action.actionName().equals(o.action.actionName())){
             return false;
@@ -141,33 +77,10 @@ public class GroundedTask {
             }
 
             return flag;
+       
         }
-
-
-
-//        if(this.params instanceof Object[]){
-//            if(!(o.params instanceof Object[])){
-//                return false;
-//            }
-//            if(Arrays.equals((Object[])this.getParams(),(Object[])o.getParams())){
-//                return true;
-//            }
-//            return false;
-//
-//        }
-//
-//        if(!this.params.equals(o.params)){
-//            return false;
-//        }
-        // check if same parameters expecting same parameter order groups
-
-        // check if arrays and then check equals
-
         return true;
 
     }
 
-    public double pseudoRewardFunction(State s){
-    	return rf.reward(s, action, s);
-    }
 }

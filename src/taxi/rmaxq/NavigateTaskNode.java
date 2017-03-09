@@ -26,16 +26,14 @@ public class NavigateTaskNode extends NonPrimitiveTaskNode{
 	public static final String ACTION_NAVIGATE = "navigate";
     protected String[] locations;
     protected List<GroundedTask> gts;
-    public NavigateTaskNode(String[] locs, TaskNode[] children, OOSADomain dom){
+    public NavigateTaskNode(String name, String[] locs, TaskNode[] children){
         this.name = ACTION_NAVIGATE;
-        this.domain = dom;
         locations = locs;
     	this.taskNodes = children;
     	
     	gts = new ArrayList<GroundedTask>();
-    	RewardFunction urf = new UniformCostRF();
     	for( String loc : locations){
-        	gts.add(new GroundedTask(this, new SimpleAction(ACTION_NAVIGATE + "_" + loc), urf));
+        	gts.add(new GroundedTask(this, new SimpleAction(ACTION_NAVIGATE + "_" + loc)));
         }
     }
 
@@ -62,9 +60,8 @@ public class NavigateTaskNode extends NonPrimitiveTaskNode{
     public List<GroundedTask> getApplicableGroundedTasks(State s) {
         List<GroundedTask> gtList = new ArrayList<GroundedTask>();
         for(GroundedTask gt : gts){
-        	if(!terminal(s, gt.getAction())){
+        	if(!terminal(s, gt.getAction()))
         		gtList.add(gt);
-        	}
         }
         
         return gtList;

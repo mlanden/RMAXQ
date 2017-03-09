@@ -1,17 +1,14 @@
 package rmaxq.framework;
 
-import java.util.ArrayList;  
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.w3c.dom.ranges.RangeException;
-
-import burlap.behavior.policy.GreedyDeterministicQPolicy;
 import burlap.behavior.policy.GreedyQPolicy;
 import burlap.behavior.policy.SolverDerivedPolicy;
 import burlap.behavior.singleagent.Episode;
-//import burlap.behavior.singleagent.auxiliary.StateReachability;
+import burlap.behavior.singleagent.auxiliary.StateReachability;
 import burlap.behavior.singleagent.learning.LearningAgent;
 import burlap.mdp.core.action.Action;
 import burlap.mdp.core.state.State;
@@ -68,7 +65,8 @@ public class RmaxQLearningAgent implements LearningAgent {
 	private HashableStateFactory hashingFactory;
 	private double Vmax;
 	private Environment env;
-	private State initialState;
+	private State initialState, currentState;
+	
 	private List<State> reachableStates = new ArrayList<State>();
 	private long time = 0;
 	public RmaxQLearningAgent(TaskNode root, HashableStateFactory hs, double vmax, int threshold, double maxDelta){
@@ -100,9 +98,10 @@ public class RmaxQLearningAgent implements LearningAgent {
 	public Episode runLearningEpisode(Environment env, int maxSteps) {
 		this.env = env;
 		this.initialState = env.currentObservation();
-		Episode e = new Episode(env.currentObservation());
+		this.currentState = initialState;
+		Episode e = new Episode(currentState);
 		GroundedTask rootSolve = root.getApplicableGroundedTasks(env.currentObservation()).get(0);
-		reachableStates = BoundedStateReachability.getReachableStates(initialState, root.getDomain(), hashingFactory, 10000);
+		reachableStates = StateReachability.getReachableStates(initialState, root.getDomain(), hashingFactory);
 		
 		time = System.currentTimeMillis();
 		e = R_MaxQ(env.currentObservation(), rootSolve, e);
@@ -117,6 +116,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 			EnvironmentOutcome outcome = env.executeAction(a);
 			e.transition(outcome);
 			State sprime = outcome.op;
+			currentState = sprime;
  			HashableState hsprime = hashingFactory.hashState(sprime);
 			
 			//r(s,a) += r
@@ -178,7 +178,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 				GroundedTask childFromPolicy = groundedTaskMap.get(maxqAction.actionName());
 				e = R_MaxQ(s, childFromPolicy , e);
 				
-				terminal = task.t.terminal(env.currentObservation(), task.action);
+				terminal = task.t.terminal(currentState, task.action);
 			}while(!terminal);
 			
 			return e;

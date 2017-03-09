@@ -28,18 +28,16 @@ public class PutTaskNode extends NonPrimitiveTaskNode{
     ActionType putType;
     protected String[] passenders, locations;
     protected List<GroundedTask> gts;
-    public PutTaskNode(OOSADomain taxiDomain, String[] passes, String[] locs, TaskNode[] children){
-        this.domain = taxiDomain;
+    public PutTaskNode(String[] passes, String[] locs, TaskNode[] children){
         this.name = ACTION_PUT;
         this.taskNodes = children;
         this.passenders = passes;
         this.locations = locs;
         
         gts = new ArrayList<GroundedTask>();
-        RewardFunction urf = new UniformCostRF();
         for(String pass : passenders){
         	for(String loc : locations){
-        		gts.add(new GroundedTask(this, new SimpleAction(ACTION_PUT + "_" + pass +"_" + loc), urf));
+        		gts.add(new GroundedTask(this, new SimpleAction(ACTION_PUT + "_" + pass +"_" + loc)));
         	}
         }
     }
@@ -79,9 +77,12 @@ public class PutTaskNode extends NonPrimitiveTaskNode{
         TaxiState st = (TaxiState)s;
         for(GroundedTask gt: gts){
         	String pass = gt.actionName().split("_")[1];
-        	TaxiPassenger p = st.passengers.get(st.passengerInd(pass));
-        	if(p.inTaxi && !terminal(s, gt.getAction())){
-        		gtList.add(gt);
+        	for(TaxiPassenger p : st.passengers){
+        		if(p.name().equals(pass)){
+        			if(p.inTaxi ){
+                		gtList.add(gt);
+                	}		
+        		}
         	}
         }
         return gtList;
