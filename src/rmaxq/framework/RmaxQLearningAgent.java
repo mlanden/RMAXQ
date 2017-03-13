@@ -260,7 +260,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 				Map<HashableState, Double> psa = transition.get(a).get(hs);
 				for(HashableState hsp : psa.keySet()){
 					if(psa.get(hsp) > 0)
-						prepareEnvolope(hsp.s(), a);
+						prepareEnvolope(hsp.s(), task);
 				}
 			}
 		}
