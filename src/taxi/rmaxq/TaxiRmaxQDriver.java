@@ -52,6 +52,7 @@ public class TaxiRmaxQDriver {
         domain = td;
 //        State s = TaxiDomain.getClassicState(td, false);
         State s = TaxiDomain.getSmallClassicState(td, false);
+//        State s = TaxiDomain.getTinyClassicState(td, false);
         env = new SimulatedEnvironment(td, s);
         
         List<TaxiPassenger> passengers = ((TaxiState)s).passengers;
@@ -159,8 +160,8 @@ public class TaxiRmaxQDriver {
 //		observer.initGUI();
 //		env.addObservers(observer);
 		
-		int numEpisodes = 1;
-		int maxEpisodeSize = 100;
+		int numEpisodes = 2;
+		int maxEpisodeSize = 1000;
 		
 		int Rmax = 20;
 		int threshold = 3;

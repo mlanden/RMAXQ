@@ -117,11 +117,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 	}
 
 	protected Episode R_MaxQ(State s, GroundedTask task, Environment env, Episode e){
-		String tab = "";
-		if(task.t.isTaskPrimitive()) {
-			tab = "\t\t";
-		}
-		System.out.println(tab + task.actionName() +  "in R_MaxQ");
+		System.out.println(task.actionName() +  " in R_MaxQ");
 		HashableState hs = hashingFactory.hashState(s);
 		// if reached max number of steps...
 		if (numSteps >= maxEpisodeSize) {
@@ -178,7 +174,6 @@ public class RmaxQLearningAgent implements LearningAgent {
 //			if (terminal) { System.exit(-1); }
 //			while(!terminal) {
 			do {
-//				System.out.println(task.actionName() +  "in R_MAXQ while loop");
 
 				computePolicy(s, task);
 				
@@ -201,27 +196,20 @@ public class RmaxQLearningAgent implements LearningAgent {
 				State sPrime = e.stateSequence.get(e.stateSequence.size()-1);
 				// set s <- sPrime
 				s = sPrime;
+
+//				System.out.println(tab + task.actionName() + " ");
+//				TaskNode[] taskNodes = ((NonPrimitiveTaskNode)task.t).taskNodes;
+//				for (int i = 0; i < taskNodes.length; i++) {
+//					System.out.println(taskNodes[i]);
+//				}
 				
-				
-				
-				System.out.println(tab + task.actionName() + " ");
-				if (tab.equals("")) {
-					System.out.print(";");
-				}
-				TaskNode[] taskNodes = ((NonPrimitiveTaskNode)task.t).taskNodes;
-				for (int i = 0; i < taskNodes.length; i++) {
-					System.out.println(taskNodes[i]);
-				}
-				
-				System.out.println("\t\tTIMESTAMP " + numSteps + " " + maxEpisodeSize);
+				System.out.println("T: " + numSteps + " / " + maxEpisodeSize);
 				// if reached max number of steps...
 				if (numSteps >= maxEpisodeSize) {
 					return e;
 				}
 				
 				terminal = task.t.terminal(s, task.action);
-				
-				System.out.println(terminal);
 				
 			} while (!terminal);
 			
@@ -241,13 +229,10 @@ public class RmaxQLearningAgent implements LearningAgent {
 			envolope.put(task, new ArrayList<State>());
 		}
 		
-//		System.out.println(task.actionName() +  "in computePolicy");
 		prepareEnvolope(s, task);
-//		System.out.println(task.actionName() +  "back in computePolicy");
 		
 		boolean converged = false;
 		while(!converged){   
-//			System.out.println(task.actionName() +  "in computePolicy while loop");
 			double maxDelta = 0;
 			if(!envolope.containsKey(task))
 				envolope.put(task, new ArrayList<State>());
@@ -295,7 +280,6 @@ public class RmaxQLearningAgent implements LearningAgent {
 	}
 	
 	public void prepareEnvolope(State s, GroundedTask task){
-//		System.out.println(task.actionName() +  "in prepareEnvelope");
 		
 		if(!envolope.containsKey(task))
 			envolope.put(task, new ArrayList<State>());
@@ -318,7 +302,6 @@ public class RmaxQLearningAgent implements LearningAgent {
 				
 				Map<HashableState, Double> psa = transition.get(a).get(hs);
 				for(HashableState hsp : psa.keySet()){
-					System.out.println("Psa " + a.actionName() + " " + psa.get(hsp));
 					if(psa.get(hsp) > 0)
 						prepareEnvolope(hsp.s(), task);
 				}
@@ -327,7 +310,6 @@ public class RmaxQLearningAgent implements LearningAgent {
 	}
 	
 	public void computeModel(State s, GroundedTask task){
-//		System.out.println(task.actionName() +  "in computeModel");
 		HashableState hs = hashingFactory.hashState(s);
 		if(task.t.isTaskPrimitive()){
 			//n(s, a)
@@ -379,11 +361,9 @@ public class RmaxQLearningAgent implements LearningAgent {
 			}
 		}else{
 			computePolicy(s, task);
-//			System.out.println(task.actionName() +  "back in computeModel");
 			
 			boolean converged = false;
 			while(!converged){
-//				System.out.println(task.actionName() +  "in computeModel while loop");
 				double maxChange = 0;
 				
 				if(!envolope.containsKey(task))
@@ -467,7 +447,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 							transition.put(task, new HashMap<HashableState, Map<HashableState,Double>>());
 						if(!transition.get(task).containsKey(hsprime))
 							transition.get(task).put(hsprime, new HashMap<HashableState, Double>());
-						if(!transition.get(task).get(hsprime).containsKey(hs))
+						if(!transition.get(task).get(hsprime).containsKey(hx))
 							transition.get(task).get(hsprime).put(hx, 0.);
 						double oldPrabability = transition.get(task).get(hsprime).get(hx);
 						
@@ -522,7 +502,6 @@ public class RmaxQLearningAgent implements LearningAgent {
 					// Q_t+1 = r + p...
 					double newValue = qProvider.get(task).value(sprime);
 					maxChange = Math.abs(newValue - oldValue);
-//					System.out.println(task.actionName() +  "maxChange " + maxChange);
 				}
 				if(maxChange < dynamicPrgEpsilon)
 					converged = true;
@@ -531,7 +510,6 @@ public class RmaxQLearningAgent implements LearningAgent {
 	}
 		
 	protected void addChildTasks(GroundedTask task, State s){
-//		System.out.println(task.actionName() +  "in getChildTasks");
 		if(!task.t.isTaskPrimitive()){
 			List<GroundedTask> childGroundedTasks =  getTaskActions(task, s);
 			
@@ -543,7 +521,6 @@ public class RmaxQLearningAgent implements LearningAgent {
 	}
 	
 	protected List<State> getTerminalStates(GroundedTask t){
-//		System.out.println(t + "in getTerminalStates");
 		if(terminal.containsKey(t))
 			return terminal.get(t);
   		List<State> terminals = new ArrayList<State>();
@@ -553,14 +530,12 @@ public class RmaxQLearningAgent implements LearningAgent {
 		}
 
 		terminal.put(t, terminals);
-//		System.out.println(t.actionName() + " " + terminals.size()+ " " + t.actionName());
 		if(terminals.size() == 0)
 			throw new RuntimeException("no terminal");
 		return terminals;
 	}
 	
 	public List<GroundedTask> getTaskActions(GroundedTask task, State s){
-//		System.out.println(task.actionName() +  "in getTaskAction");
 		TaskNode[] children = task.t.getChildren();
 		List<GroundedTask> childTasks = new ArrayList<GroundedTask>();
 		for(TaskNode t: children){
