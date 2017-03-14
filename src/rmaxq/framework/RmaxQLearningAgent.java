@@ -2,8 +2,10 @@ package rmaxq.framework;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import burlap.behavior.policy.GreedyQPolicy;
 import burlap.behavior.policy.SolverDerivedPolicy;
@@ -57,7 +59,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 	private HashMap<GroundedTask, Integer> taskToTimestamp;
 	
 	//envolope(a)
-	private Map<GroundedTask, List<State>> envolope;
+	private Map<GroundedTask, Set<State>> envolope;
 	
 	//ta 
 	private Map<GroundedTask, List<State>> terminal;
@@ -81,7 +83,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 		this.totalReward = new HashMap<HashableState, Map<GroundedTask,Double>>();
 		this.actionCount = new HashMap<HashableState, Map<GroundedTask,Integer>>();
 		this.qProvider = new HashMap<GroundedTask, QProviderRmaxQ>();
-		this.envolope = new HashMap<GroundedTask, List<State>>();
+		this.envolope = new HashMap<GroundedTask, Set<State>>();
 		this.resultingStateCount = new HashMap<HashableState, Map<GroundedTask,Map<HashableState,Integer>>>();
 		this.terminal = new HashMap<GroundedTask, List<State>>();
 		this.qPolicy = new HashMap<GroundedTask, SolverDerivedPolicy>();
@@ -103,6 +105,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 
 		this.numSteps = 0;
 		this.taskToTimestamp = new HashMap<GroundedTask, Integer>();
+		this.tThreshold = 0;
 		
 		State initial = env.currentObservation();
 //		currentState = initial;
@@ -226,7 +229,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 		Integer oldTimestamp = taskToTimestamp.get(task);
 		if (oldTimestamp < tThreshold) {
 			taskToTimestamp.put(task, numSteps);
-			envolope.put(task, new ArrayList<State>());
+			envolope.put(task, new HashSet<State>());
 		}
 		
 		prepareEnvolope(s, task);
@@ -235,11 +238,11 @@ public class RmaxQLearningAgent implements LearningAgent {
 		while(!converged){   
 			double maxDelta = 0;
 			if(!envolope.containsKey(task))
-				envolope.put(task, new ArrayList<State>());
-			List<State> envolopA = envolope.get(task);
-			
-			for(int i = 0; i < envolopA.size(); i++){
-				State sprime = envolopA.get(i);
+				envolope.put(task, new HashSet<State>());
+			Set<State> envolopA = envolope.get(task);
+			List<State> stateList = new ArrayList<State>(envolopA);
+			for(int i = 0; i < stateList.size(); i++){
+				State sprime = stateList.get(i);
 				HashableState hsprime = hashingFactory.hashState(sprime);
 				List<GroundedTask> ActionIns = getTaskActions(task, sprime);
 				for(int j  = 0; j < ActionIns.size(); j++){
@@ -282,8 +285,8 @@ public class RmaxQLearningAgent implements LearningAgent {
 	public void prepareEnvolope(State s, GroundedTask task){
 		
 		if(!envolope.containsKey(task))
-			envolope.put(task, new ArrayList<State>());
-		List<State> envelope = envolope.get(task);
+			envolope.put(task, new HashSet<State>());
+		Set<State> envelope = envolope.get(task);
 		HashableState hs = hashingFactory.hashState(s);
 		
 		if(!envelope.contains(s)){
@@ -367,8 +370,8 @@ public class RmaxQLearningAgent implements LearningAgent {
 				double maxChange = 0;
 				
 				if(!envolope.containsKey(task))
-					envolope.put(task, new ArrayList<State>());
-				List<State> envelopeA = envolope.get(task);
+					envolope.put(task, new HashSet<State>());
+				Set<State> envelopeA = envolope.get(task);
 				for(State sprime : envelopeA){
 					
 					double oldValue = qProvider.get(task).value(sprime);

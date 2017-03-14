@@ -160,7 +160,7 @@ public class TaxiRmaxQDriver {
 //		observer.initGUI();
 //		env.addObservers(observer);
 		
-		int numEpisodes = 2;
+		int numEpisodes = 10;
 		int maxEpisodeSize = 1000;
 		
 		int Rmax = 20;
