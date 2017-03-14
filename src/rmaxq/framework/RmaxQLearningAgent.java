@@ -51,7 +51,10 @@ public class RmaxQLearningAgent implements LearningAgent {
 	private Map<GroundedTask, SolverDerivedPolicy> qPolicy;
 	
 	//t
-	private int timestamp;
+	private int numSteps;
+	private int tThreshold;
+	private int maxEpisodeSize;
+	private HashMap<GroundedTask, Integer> taskToTimestamp;
 	
 	//envolope(a)
 	private Map<GroundedTask, List<State>> envolope;
@@ -65,10 +68,9 @@ public class RmaxQLearningAgent implements LearningAgent {
 	private HashableStateFactory hashingFactory;
 	private double Vmax;
 	private Environment env;
-	private State initialState, currentState;
+	private State initialState;
 	
 	private List<State> reachableStates = new ArrayList<State>();
-	private long time = 0;
 	public RmaxQLearningAgent(TaskNode root, HashableStateFactory hs, double vmax, int threshold, double maxDelta){
 //		this.qValue = new HashMap<GroundedTask, Map<HashableState,Map<GroundedTask,Double>>>();
 //		this.value = new HashMap<GroundedTask, Map<HashableState,Double>>();
@@ -84,8 +86,9 @@ public class RmaxQLearningAgent implements LearningAgent {
 		this.terminal = new HashMap<GroundedTask, List<State>>();
 		this.qPolicy = new HashMap<GroundedTask, SolverDerivedPolicy>();
 		this.groundedTaskMap = new HashMap<String, GroundedTask>();
+		this.taskToTimestamp = new HashMap<GroundedTask, Integer>();
 		this.dynamicPrgEpsilon = maxDelta;
-		this.timestamp = 0;
+		this.numSteps = 0;
 		this.hashingFactory = hs;
 		this.Vmax = vmax;
 		this.threshold = threshold;
@@ -95,28 +98,41 @@ public class RmaxQLearningAgent implements LearningAgent {
 		return runLearningEpisode(env, -1);
 	}
 
-	public Episode runLearningEpisode(Environment env, int maxSteps) {
-		this.env = env;
-		this.initialState = env.currentObservation();
-		this.currentState = initialState;
-		Episode e = new Episode(currentState);
-		GroundedTask rootSolve = root.getApplicableGroundedTasks(env.currentObservation()).get(0);
-		reachableStates = StateReachability.getReachableStates(initialState, root.getDomain(), hashingFactory);
+	public Episode runLearningEpisode(Environment env, int maxEpisodeSize) {
+		this.maxEpisodeSize = maxEpisodeSize;
+
+		this.numSteps = 0;
+		this.taskToTimestamp = new HashMap<GroundedTask, Integer>();
 		
-		time = System.currentTimeMillis();
-		e = R_MaxQ(env.currentObservation(), rootSolve, e);
-		time = System.currentTimeMillis() - time;
-		return e;
+		State initial = env.currentObservation();
+//		currentState = initial;
+		Episode episode = new Episode(initial);
+		GroundedTask rootSolve = root.getApplicableGroundedTasks(initial).get(0);
+		reachableStates = StateReachability.getReachableStates(initial, root.getDomain(), hashingFactory);
+
+//		startTime = System.currentTimeMillis();
+		episode = R_MaxQ(initial, rootSolve, env, episode);
+//		endTime = System.currentTimeMillis() - startTime;
+		return episode;
 	}
 
-	protected Episode R_MaxQ(State s, GroundedTask task, Episode e){
+	protected Episode R_MaxQ(State s, GroundedTask task, Environment env, Episode e){
+		String tab = "";
+		if(task.t.isTaskPrimitive()) {
+			tab = "\t\t";
+		}
+		System.out.println(tab + task.actionName() +  "in R_MaxQ");
 		HashableState hs = hashingFactory.hashState(s);
+		// if reached max number of steps...
+		if (numSteps >= maxEpisodeSize) {
+			return e;
+		}
 		if(task.t.isTaskPrimitive()){
 			Action a = task.getAction();
 			EnvironmentOutcome outcome = env.executeAction(a);
 			e.transition(outcome);
 			State sprime = outcome.op;
-			currentState = sprime;
+//			currentState = sprime;
  			HashableState hsprime = hashingFactory.hashState(sprime);
 			
 			//r(s,a) += r
@@ -153,12 +169,17 @@ public class RmaxQLearningAgent implements LearningAgent {
 			if(!transition.get(task).get(hs).containsKey(hsprime))
 				transition.get(task).get(hs).put(hsprime, 0.);
 			
-			timestamp++;
+			numSteps++;
 			
 			return e;
 		}else{ //task is composute
 			boolean terminal = false;
-			do{
+//			boolean terminal = task.t.terminal(currentState, task.action);
+//			if (terminal) { System.exit(-1); }
+//			while(!terminal) {
+			do {
+//				System.out.println(task.actionName() +  "in R_MAXQ while loop");
+
 				computePolicy(s, task);
 				
 				if(!qProvider.containsKey(task))
@@ -176,10 +197,33 @@ public class RmaxQLearningAgent implements LearningAgent {
 				
 				//R pia(s') (s')
 				GroundedTask childFromPolicy = groundedTaskMap.get(maxqAction.actionName());
-				e = R_MaxQ(s, childFromPolicy , e);
+				e = R_MaxQ(s, childFromPolicy, env, e);
+				State sPrime = e.stateSequence.get(e.stateSequence.size()-1);
+				// set s <- sPrime
+				s = sPrime;
 				
-				terminal = task.t.terminal(currentState, task.action);
-			}while(!terminal);
+				
+				
+				System.out.println(tab + task.actionName() + " ");
+				if (tab.equals("")) {
+					System.out.print(";");
+				}
+				TaskNode[] taskNodes = ((NonPrimitiveTaskNode)task.t).taskNodes;
+				for (int i = 0; i < taskNodes.length; i++) {
+					System.out.println(taskNodes[i]);
+				}
+				
+				System.out.println("\t\tTIMESTAMP " + numSteps + " " + maxEpisodeSize);
+				// if reached max number of steps...
+				if (numSteps >= maxEpisodeSize) {
+					return e;
+				}
+				
+				terminal = task.t.terminal(s, task.action);
+				
+				System.out.println(terminal);
+				
+			} while (!terminal);
 			
 			return e;
 			
@@ -187,10 +231,23 @@ public class RmaxQLearningAgent implements LearningAgent {
 	}
 	
 	public void computePolicy(State s, GroundedTask task){
+		
+		if (!taskToTimestamp.containsKey(task)) {
+			taskToTimestamp.put(task, 0);
+		}
+		Integer oldTimestamp = taskToTimestamp.get(task);
+		if (oldTimestamp < tThreshold) {
+			taskToTimestamp.put(task, numSteps);
+			envolope.put(task, new ArrayList<State>());
+		}
+		
+//		System.out.println(task.actionName() +  "in computePolicy");
 		prepareEnvolope(s, task);
+//		System.out.println(task.actionName() +  "back in computePolicy");
 		
 		boolean converged = false;
 		while(!converged){   
+//			System.out.println(task.actionName() +  "in computePolicy while loop");
 			double maxDelta = 0;
 			if(!envolope.containsKey(task))
 				envolope.put(task, new ArrayList<State>());
@@ -238,6 +295,8 @@ public class RmaxQLearningAgent implements LearningAgent {
 	}
 	
 	public void prepareEnvolope(State s, GroundedTask task){
+//		System.out.println(task.actionName() +  "in prepareEnvelope");
+		
 		if(!envolope.containsKey(task))
 			envolope.put(task, new ArrayList<State>());
 		List<State> envelope = envolope.get(task);
@@ -259,6 +318,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 				
 				Map<HashableState, Double> psa = transition.get(a).get(hs);
 				for(HashableState hsp : psa.keySet()){
+					System.out.println("Psa " + a.actionName() + " " + psa.get(hsp));
 					if(psa.get(hsp) > 0)
 						prepareEnvolope(hsp.s(), task);
 				}
@@ -267,6 +327,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 	}
 	
 	public void computeModel(State s, GroundedTask task){
+//		System.out.println(task.actionName() +  "in computeModel");
 		HashableState hs = hashingFactory.hashState(s);
 		if(task.t.isTaskPrimitive()){
 			//n(s, a)
@@ -318,15 +379,20 @@ public class RmaxQLearningAgent implements LearningAgent {
 			}
 		}else{
 			computePolicy(s, task);
+//			System.out.println(task.actionName() +  "back in computeModel");
 			
 			boolean converged = false;
 			while(!converged){
+//				System.out.println(task.actionName() +  "in computeModel while loop");
 				double maxChange = 0;
 				
 				if(!envolope.containsKey(task))
 					envolope.put(task, new ArrayList<State>());
 				List<State> envelopeA = envolope.get(task);
 				for(State sprime : envelopeA){
+					
+					double oldValue = qProvider.get(task).value(sprime);
+					
 					HashableState hsprime = hashingFactory.hashState(sprime);
 					//Ra(sp)
 					if(!reward.containsKey(task))
@@ -389,8 +455,8 @@ public class RmaxQLearningAgent implements LearningAgent {
 					reward.get(task).put(hsprime, newReward);
 					
 					//find max change for value iteration
-					if(Math.abs(newReward - prevReward) > maxChange)
-						maxChange = Math.abs(newReward - prevReward);
+//					if(Math.abs(newReward - prevReward) > maxChange)
+//						maxChange = Math.abs(newReward - prevReward);
 					
 					//for all s in ta
 					List<State> terminal = getTerminalStates(task);
@@ -446,6 +512,17 @@ public class RmaxQLearningAgent implements LearningAgent {
 						transition.get(task).get(hsprime).put(hx, newProb);
 					}
 					
+					//(must store V^prime_t)
+					// compute policy iteration 
+					// v_t+1 = r + p
+					// to get new V^prime_{t+1} 
+					// change = delta of new V and old V
+					// if change > maxChange, set it
+					// except we want
+					// Q_t+1 = r + p...
+					double newValue = qProvider.get(task).value(sprime);
+					maxChange = Math.abs(newValue - oldValue);
+//					System.out.println(task.actionName() +  "maxChange " + maxChange);
 				}
 				if(maxChange < dynamicPrgEpsilon)
 					converged = true;
@@ -454,6 +531,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 	}
 		
 	protected void addChildTasks(GroundedTask task, State s){
+//		System.out.println(task.actionName() +  "in getChildTasks");
 		if(!task.t.isTaskPrimitive()){
 			List<GroundedTask> childGroundedTasks =  getTaskActions(task, s);
 			
@@ -465,6 +543,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 	}
 	
 	protected List<State> getTerminalStates(GroundedTask t){
+//		System.out.println(t + "in getTerminalStates");
 		if(terminal.containsKey(t))
 			return terminal.get(t);
   		List<State> terminals = new ArrayList<State>();
@@ -474,13 +553,14 @@ public class RmaxQLearningAgent implements LearningAgent {
 		}
 
 		terminal.put(t, terminals);
-		System.out.println(terminals.size()+ " " + t.actionName());
+//		System.out.println(t.actionName() + " " + terminals.size()+ " " + t.actionName());
 		if(terminals.size() == 0)
 			throw new RuntimeException("no terminal");
 		return terminals;
 	}
 	
 	public List<GroundedTask> getTaskActions(GroundedTask task, State s){
+//		System.out.println(task.actionName() +  "in getTaskAction");
 		TaskNode[] children = task.t.getChildren();
 		List<GroundedTask> childTasks = new ArrayList<GroundedTask>();
 		for(TaskNode t: children){

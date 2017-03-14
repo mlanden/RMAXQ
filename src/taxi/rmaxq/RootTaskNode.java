@@ -11,6 +11,7 @@ import rmaxq.framework.NonPrimitiveTaskNode;
 import rmaxq.framework.TaskNode;
 import taxi.TaxiRewardFunction;
 import taxi.TaxiTerminationFunction;
+import taxi.state.TaxiState;
 
 import java.util.ArrayList;
 import java.util.List;

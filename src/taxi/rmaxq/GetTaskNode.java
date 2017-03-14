@@ -63,6 +63,9 @@ public class GetTaskNode extends NonPrimitiveTaskNode{
         	if(!terminal(s, g.getAction()))
         	gt.add(g);
         }
+//        for (GroundedTask g : gt) {
+//            System.err.println(g.actionName());
+//        }
         return gt;
     }
 }
