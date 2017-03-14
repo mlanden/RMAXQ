@@ -328,13 +328,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 				List<State> envelopeA = envolope.get(task);
 				for(State sprime : envelopeA){
 					HashableState hsprime = hashingFactory.hashState(sprime);
-					//Ra(sp)
-					if(!reward.containsKey(task))
-						reward.put(task, new HashMap<HashableState, Double>());
-					if(!reward.get(task).containsKey(hsprime))
-						reward.get(task).put(hsprime, Vmax);
-					double prevReward = reward.get(task).get(hsprime);
-					
+					//get preevi
 					// calculate new reward
 					//get qprovider
 					if(!qProvider.containsKey(task))
@@ -358,7 +352,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 						reward.get(childFromPolicy).put(hsprime, Vmax);
 					double actionReward = reward.get(childFromPolicy).get(hsprime);
 					
-					//p pia(s') (s',.)
+					//p pia(s') (s',.) 
 					if(!transition.containsKey(childFromPolicy))
 						transition.put(childFromPolicy, new HashMap<HashableState, Map<HashableState,Double>>());
 					if(!transition.get(childFromPolicy).containsKey(hsprime))
@@ -389,8 +383,8 @@ public class RmaxQLearningAgent implements LearningAgent {
 					reward.get(task).put(hsprime, newReward);
 					
 					//find max change for value iteration
-					if(Math.abs(newReward - prevReward) > maxChange)
-						maxChange = Math.abs(newReward - prevReward);
+//					if(Math.abs(newReward - prevReward) > maxChange)
+//						maxChange = Math.abs(newReward - prevReward);
 					
 					//for all s in ta
 					List<State> terminal = getTerminalStates(task);
@@ -401,7 +395,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 							transition.put(task, new HashMap<HashableState, Map<HashableState,Double>>());
 						if(!transition.get(task).containsKey(hsprime))
 							transition.get(task).put(hsprime, new HashMap<HashableState, Double>());
-						if(!transition.get(task).get(hsprime).containsKey(hs))
+						if(!transition.get(task).get(hsprime).containsKey(hx))
 							transition.get(task).get(hsprime).put(hx, 0.);
 						double oldPrabability = transition.get(task).get(hsprime).get(hx);
 						
@@ -435,8 +429,8 @@ public class RmaxQLearningAgent implements LearningAgent {
 						}
 						double newProb = childProbability + weightedTransition;
 						
-						if(Math.abs(newProb - oldPrabability) > maxChange)
-							maxChange = Math.abs(newProb - oldPrabability);
+//						if(Math.abs(newProb - oldPrabability) > maxChange)
+//							maxChange = Math.abs(newProb - oldPrabability);
 						
 						//set pa(s',x)
 						if(!transition.containsKey(task))
@@ -446,7 +440,10 @@ public class RmaxQLearningAgent implements LearningAgent {
 						transition.get(task).get(hsprime).put(hx, newProb);
 					}
 					
+					//recompute policy and check qa(s',?)
+					
 				}
+				System.out.println(maxChange);
 				if(maxChange < dynamicPrgEpsilon)
 					converged = true;
 			}

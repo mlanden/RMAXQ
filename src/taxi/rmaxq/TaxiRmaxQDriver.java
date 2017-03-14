@@ -87,7 +87,7 @@ public class TaxiRmaxQDriver {
         TaskNode[] putNodeSubTasks = new TaskNode[]{tdp,navigate};
         
         TaskNode getNode = new GetTaskNode(td, passengerNames, getNodeSubTasks);
-        TaskNode putNode = new PutTaskNode(passengerNames, passengerNames, putNodeSubTasks);
+        TaskNode putNode = new PutTaskNode(passengerNames, locationNames, putNodeSubTasks);
         
         TaskNode[] rootTasks = new TaskNode[]{getNode, putNode};
         

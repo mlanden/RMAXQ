@@ -75,8 +75,8 @@ public abstract class NonPrimitiveTaskNode implements TaskNode{
     // this is the reward function for the grounded task
     
     public double pseudoRewardFunction(State s, Action a){
-        if(terminal(s, a))
-        	return 100;
+//        if(terminal(s, a))
+//        	return 100;
         return 0;
     }
 
