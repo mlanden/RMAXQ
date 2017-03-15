@@ -510,7 +510,7 @@ public class TaxiDomain implements DomainGenerator{
                             // we can only drop a passenger in the goal location, every other dropoff is illegal!
                             String goalLocation = ((TaxiPassenger)p).goalLocation;
                             for(ObjectInstance l :locationList){
-                                if(goalLocation.equals(((TaxiLocation)l).colour)){
+//                                if(goalLocation.equals(((TaxiLocation)l).colour)){
                                     if(((TaxiLocation)l).x==((TaxiPassenger)p).x
                                             && ((TaxiLocation)l).y==((TaxiPassenger)p).y){
                                         int passID = ns.passengerInd(((TaxiPassenger)p).name());
@@ -518,7 +518,7 @@ public class TaxiDomain implements DomainGenerator{
                                         np.inTaxi = false;
                                         taxi.taxiOccupied = false;
                                         break;
-                                    }
+//                                    }
                                 }
                             }
 

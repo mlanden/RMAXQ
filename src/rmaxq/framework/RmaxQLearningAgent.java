@@ -112,6 +112,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 		Episode episode = new Episode(initial);
 		GroundedTask rootSolve = root.getApplicableGroundedTasks(initial).get(0);
 		reachableStates = StateReachability.getReachableStates(initial, root.getDomain(), hashingFactory);
+		System.out.println(reachableStates.size());
 
 //		startTime = System.currentTimeMillis();
 		episode = R_MaxQ(initial, rootSolve, env, episode);

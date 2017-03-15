@@ -59,6 +59,11 @@ public class PutTaskNode extends NonPrimitiveTaskNode{
         String passName = act[1], goalName = act[2];
         TaxiState st = (TaxiState)s;
         for(TaxiPassenger p : st.passengers){
+            if (p.name().equals(passName)) {
+            	if (!p.inTaxi) {
+            		return true;
+            	}
+            }
         	for(TaxiLocation l : st.locations){
         		if(p.name().equals(passName) && l.name().equals(goalName)){
         			if(p.x == l.x && p.y == l.y){
