@@ -41,12 +41,12 @@ public class TaxiRmaxQDriver {
 
         TaxiDomain TDGen = new TaxiDomain(taxiRF, taxiTF);
         
-        TDGen.setTransitionDynamicsLikeFickleTaxiProlem();
+//        TDGen.setTransitionDynamicsLikeFickleTaxiProlem();
         TDGen.setFickleTaxi(false);
         TDGen.setIncludeFuel(false);
         OOSADomain td = TDGen.generateDomain();
         domain = td;
-        State s = TaxiDomain.getClassicState(td, false);
+        State s = TaxiDomain.getTinyClassicState(domain, false);
         env = new SimulatedEnvironment(td, s);
         
         List<TaxiPassenger> passengers = ((TaxiState)s).passengers;
@@ -145,8 +145,12 @@ public class TaxiRmaxQDriver {
 		
 //		QlearningState();
 		LearningAgent RmaxQ = new RmaxQLearningAgent(root, hs, 100, 3, 0.01);
- 		Episode e = RmaxQ.runLearningEpisode(env);
-		e.write("output/episode_1");
+
+		for(int i = 1; i <= 50; i++){
+			Episode e = RmaxQ.runLearningEpisode(env);
+			e.write("output/episode_" + i);
+			env.resetEnvironment();
+		}
 		
 		Visualizer v = TaxiVisualizer.getVisualizer(5, 5);
 		new EpisodeSequenceVisualizer(v, domain, "output/" );

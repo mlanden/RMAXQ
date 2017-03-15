@@ -50,9 +50,6 @@ public class RmaxQLearningAgent implements LearningAgent {
 	//policies
 	private Map<GroundedTask, SolverDerivedPolicy> qPolicy;
 	
-	//t
-	private int timestamp;
-	
 	//envolope(a)
 	private Map<GroundedTask, List<State>> envolope;
 	
@@ -65,14 +62,11 @@ public class RmaxQLearningAgent implements LearningAgent {
 	private HashableStateFactory hashingFactory;
 	private double Vmax;
 	private Environment env;
-	private State initialState, currentState;
+	private State initialState;
 	
 	private List<State> reachableStates = new ArrayList<State>();
 	private long time = 0;
 	public RmaxQLearningAgent(TaskNode root, HashableStateFactory hs, double vmax, int threshold, double maxDelta){
-//		this.qValue = new HashMap<GroundedTask, Map<HashableState,Map<GroundedTask,Double>>>();
-//		this.value = new HashMap<GroundedTask, Map<HashableState,Double>>();
-		
 		this.root = root;
 		this.reward = new HashMap<GroundedTask, Map<HashableState,Double>>();
 		this.transition = new HashMap<GroundedTask, Map<HashableState, Map<HashableState, Double>>>();
@@ -85,7 +79,6 @@ public class RmaxQLearningAgent implements LearningAgent {
 		this.qPolicy = new HashMap<GroundedTask, SolverDerivedPolicy>();
 		this.groundedTaskMap = new HashMap<String, GroundedTask>();
 		this.dynamicPrgEpsilon = maxDelta;
-		this.timestamp = 0;
 		this.hashingFactory = hs;
 		this.Vmax = vmax;
 		this.threshold = threshold;
@@ -98,8 +91,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 	public Episode runLearningEpisode(Environment env, int maxSteps) {
 		this.env = env;
 		this.initialState = env.currentObservation();
-		this.currentState = initialState;
-		Episode e = new Episode(currentState);
+		Episode e = new Episode(initialState);
 		GroundedTask rootSolve = root.getApplicableGroundedTasks(env.currentObservation()).get(0);
 		reachableStates = StateReachability.getReachableStates(initialState, root.getDomain(), hashingFactory);
 		
@@ -116,7 +108,6 @@ public class RmaxQLearningAgent implements LearningAgent {
 			EnvironmentOutcome outcome = env.executeAction(a);
 			e.transition(outcome);
 			State sprime = outcome.op;
-			currentState = sprime;
  			HashableState hsprime = hashingFactory.hashState(sprime);
 			
 			//r(s,a) += r
@@ -153,13 +144,11 @@ public class RmaxQLearningAgent implements LearningAgent {
 			if(!transition.get(task).get(hs).containsKey(hsprime))
 				transition.get(task).get(hs).put(hsprime, 0.);
 			
-			timestamp++;
-			
 			return e;
 		}else{ //task is composute
 			boolean terminal = false;
 			do{
-				computePolicy(s, task);
+				computePolicy(s, task, true);
 				
 				if(!qProvider.containsKey(task))
 					qProvider.put(task, new QProviderRmaxQ(hashingFactory, task));
@@ -177,8 +166,9 @@ public class RmaxQLearningAgent implements LearningAgent {
 				//R pia(s') (s')
 				GroundedTask childFromPolicy = groundedTaskMap.get(maxqAction.actionName());
 				e = R_MaxQ(s, childFromPolicy , e);
+				s = e.stateSequence.get(e.stateSequence.size() - 1);
 				
-				terminal = task.t.terminal(currentState, task.action);
+				terminal = task.t.terminal(s, task.action);
 			}while(!terminal);
 			
 			return e;
@@ -186,8 +176,12 @@ public class RmaxQLearningAgent implements LearningAgent {
 		}
 	}
 	
-	public void computePolicy(State s, GroundedTask task){
-		prepareEnvolope(s, task);
+	public void computePolicy(State s, GroundedTask task, boolean prepare){
+		if(prepare)
+			prepareEnvolope(s, task);
+		if(!qProvider.containsKey(task))
+			qProvider.put(task, new QProviderRmaxQ(hashingFactory, task));
+		QProviderRmaxQ qp = qProvider.get(task);
 		
 		boolean converged = false;
 		while(!converged){   
@@ -202,9 +196,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 				List<GroundedTask> ActionIns = getTaskActions(task, sprime);
 				for(int j  = 0; j < ActionIns.size(); j++){
 					GroundedTask a = ActionIns.get(j);
-					if(!qProvider.containsKey(task))
-						qProvider.put(task, new QProviderRmaxQ(hashingFactory, a));
-					QProviderRmaxQ qp = qProvider.get(task);
+					
 					double oldQ = qp.qValue(sprime, a.action);
 					
 					//Ra'(s')
@@ -301,7 +293,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 					//get n(s, a, s')
 					if(!resultingStateCount.containsKey(hs))
 						resultingStateCount.put(hs, new HashMap<GroundedTask, Map<HashableState,Integer>>());
-					if(!resultingStateCount.get(hs).containsKey(task))
+				if(!resultingStateCount.get(hs).containsKey(task))
 						resultingStateCount.get(hs).put(task, new HashMap<HashableState, Integer>());
 					if(!resultingStateCount.get(hs).get(task).containsKey(hsprime))
 						resultingStateCount.get(hs).get(task).put(hsprime, 0);
@@ -317,7 +309,16 @@ public class RmaxQLearningAgent implements LearningAgent {
 				}
 			}
 		}else{
-			computePolicy(s, task);
+			computePolicy(s, task, true);
+			
+			if(!qProvider.containsKey(task))
+				qProvider.put(task, new QProviderRmaxQ(hashingFactory, task));
+			QProviderRmaxQ qvalues = qProvider.get(task);
+			
+			if(!qPolicy.containsKey(task))
+				qPolicy.put(task, new GreedyQPolicy());
+			SolverDerivedPolicy taskFromPolicy = qPolicy.get(task);
+			taskFromPolicy.setSolver(qvalues);
 			
 			boolean converged = false;
 			while(!converged){
@@ -327,19 +328,10 @@ public class RmaxQLearningAgent implements LearningAgent {
 					envolope.put(task, new ArrayList<State>());
 				List<State> envelopeA = envolope.get(task);
 				for(State sprime : envelopeA){
+					 
 					HashableState hsprime = hashingFactory.hashState(sprime);
-					//get preevi
-					// calculate new reward
-					//get qprovider
-					if(!qProvider.containsKey(task))
-						qProvider.put(task, new QProviderRmaxQ(hashingFactory, task));
-					QProviderRmaxQ qvalues = qProvider.get(task);
-					
-					if(!qPolicy.containsKey(task))
-						qPolicy.put(task, new GreedyQPolicy());
-					SolverDerivedPolicy taskFromPolicy = qPolicy.get(task);
-					taskFromPolicy.setSolver(qvalues);
-					
+					double oldValue = qvalues.value(sprime);
+
 					Action maxqAction = taskFromPolicy.action(sprime);
 					if(!groundedTaskMap.containsKey(maxqAction.actionName()))
 						addChildTasks(task, sprime);
@@ -391,13 +383,13 @@ public class RmaxQLearningAgent implements LearningAgent {
 					for(State x :terminal){
 						HashableState hx = hashingFactory.hashState(x);
 						//get current pa(s',x)
-						if(!transition.containsKey(task))
-							transition.put(task, new HashMap<HashableState, Map<HashableState,Double>>());
-						if(!transition.get(task).containsKey(hsprime))
-							transition.get(task).put(hsprime, new HashMap<HashableState, Double>());
-						if(!transition.get(task).get(hsprime).containsKey(hx))
-							transition.get(task).get(hsprime).put(hx, 0.);
-						double oldPrabability = transition.get(task).get(hsprime).get(hx);
+//						if(!transition.containsKey(task))
+//							transition.put(task, new HashMap<HashableState, Map<HashableState,Double>>());
+//						if(!transition.get(task).containsKey(hsprime))
+//							transition.get(task).put(hsprime, new HashMap<HashableState, Double>());
+//						if(!transition.get(task).get(hsprime).containsKey(hx))
+//							transition.get(task).get(hsprime).put(hx, 0.);
+//						double oldPrabability = transition.get(task).get(hsprime).get(hx);
 						
 						//p pia(s) (s',x)
 						if(!transition.containsKey(childFromPolicy))
@@ -440,8 +432,11 @@ public class RmaxQLearningAgent implements LearningAgent {
 						transition.get(task).get(hsprime).put(hx, newProb);
 					}
 					
-					//recompute policy and check qa(s',?)
-					
+					//recompute policy and check v
+					computePolicy(s, task, true);
+					double newValue = qvalues.value(sprime);
+					if(Math.abs(newValue - oldValue) > maxChange)
+						maxChange = Math.abs(newValue - oldValue);
 				}
 				System.out.println(maxChange);
 				if(maxChange < dynamicPrgEpsilon)

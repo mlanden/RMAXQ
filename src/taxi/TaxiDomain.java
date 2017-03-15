@@ -498,19 +498,15 @@ public class TaxiDomain implements DomainGenerator{
                 TaxiAgent taxi = ns.touchTaxi();
                 boolean taxiOccupied = taxi.taxiOccupied;
 
-
-
-
                 if(taxiOccupied){
                     List<ObjectInstance> passengers = ns.objectsOfClass(PASSENGERCLASS);
                     List<ObjectInstance> locationList = ns.objectsOfClass(LOCATIONCLASS);
                     for(ObjectInstance p : passengers){
                         boolean in = ((TaxiPassenger)p).inTaxi;
                         if(in){
-                            // we can only drop a passenger in the goal location, every other dropoff is illegal!
                             String goalLocation = ((TaxiPassenger)p).goalLocation;
                             for(ObjectInstance l :locationList){
-                                if(goalLocation.equals(((TaxiLocation)l).colour)){
+//                                if(goalLocation.equals(((TaxiLocation)l).colour)){
                                     if(((TaxiLocation)l).x==((TaxiPassenger)p).x
                                             && ((TaxiLocation)l).y==((TaxiPassenger)p).y){
                                         int passID = ns.passengerInd(((TaxiPassenger)p).name());
@@ -519,7 +515,7 @@ public class TaxiDomain implements DomainGenerator{
                                         taxi.taxiOccupied = false;
                                         break;
                                     }
-                                }
+//                                }
                             }
 
 
@@ -955,7 +951,58 @@ public class TaxiDomain implements DomainGenerator{
         return false;
     }
 
-
+    public static State getTinyClassicState(Domain domain, boolean usesFuel){
+    	
+    	        TaxiAgent taxiAgent = new TaxiAgent(TAXICLASS+0,0,0);
+    	
+    	        TaxiPassenger p1 = new TaxiPassenger(PASSENGERCLASS+0, 0, 1, RED, BLUE);
+    	
+    	        TaxiLocation l0 = new TaxiLocation(0, 0,LOCATIONCLASS+0,RED);
+    	        TaxiLocation l1 = new TaxiLocation(0, 1,LOCATIONCLASS+1,BLUE);
+    	//        TaxiLocation l2 = new TaxiLocation(0, 2,LOCATIONCLASS+2,YELLOW);
+    	//        TaxiLocation l3 = new TaxiLocation(0, 3,LOCATIONCLASS+3,GREEN);
+    	
+    	        List<TaxiLocation> taxiLocations = new ArrayList<TaxiLocation>();
+    	        List<TaxiPassenger> taxiPassengers= new ArrayList<TaxiPassenger>();
+    	
+    	        if(usesFuel){
+    	            TaxiLocation lFuel = new TaxiLocation(2,1,LOCATIONCLASS+4,FUEL);
+    	            taxiLocations.add(lFuel);
+    	        }
+    	        taxiLocations.add(l0);
+    	        taxiLocations.add(l1);
+    	//        taxiLocations.add(l2);
+    	//        taxiLocations.add(l3);
+    	
+    	        taxiPassengers.add(p1);
+    	
+    	        TaxiMapWall wall0 = new TaxiMapWall(WALLCLASS+0,0, 5, 0, false);
+    	        TaxiMapWall wall1 = new TaxiMapWall(WALLCLASS+1,0, 5, 5, false);
+    	        TaxiMapWall wall2 = new TaxiMapWall(WALLCLASS+2,0, 5, 0, true);
+    	        TaxiMapWall wall3 = new TaxiMapWall(WALLCLASS+3,0, 5, 5, true);
+    	        TaxiMapWall wall4 = new TaxiMapWall(WALLCLASS+4,0, 5, 1, true);
+    	        TaxiMapWall wall5 = new TaxiMapWall(WALLCLASS+5,3, 5, 2, true);
+    	        TaxiMapWall wall6 = new TaxiMapWall(WALLCLASS+6,0, 2, 3, true);
+    	        TaxiMapWall wall7 = new TaxiMapWall(WALLCLASS+7,0, 2, 2, false);
+    	
+    	        List<TaxiMapWall> walls = new ArrayList<TaxiMapWall>();
+    	        walls.add(wall0);
+    	        walls.add(wall1);
+    	        walls.add(wall2);
+    	        walls.add(wall3);
+    	        walls.add(wall4);
+    	        walls.add(wall5);
+    	        walls.add(wall6);
+    	        walls.add(wall7);
+    	
+    	
+    	        State s = new TaxiState(walls,taxiPassengers,taxiLocations,taxiAgent);
+    	
+    	
+    	        return s;
+    	
+    	    
+    	    }
 
     public static State getClassicState(Domain domain, boolean usesFuel){
 
