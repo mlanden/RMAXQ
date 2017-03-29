@@ -112,7 +112,7 @@ public class TaxiRmaxQDriver {
 			}
 		};
 		
-		LearningAlgorithmExperimenter exp = new LearningAlgorithmExperimenter(env, 10, 1000, RmaxQ);
+		LearningAlgorithmExperimenter exp = new LearningAlgorithmExperimenter(env, 5, 1000, RmaxQ);
 		exp.setUpPlottingConfiguration(500, 250, 2, 1000,
 				TrialMode.MOST_RECENT_AND_AVERAGE,
 				PerformanceMetric.CUMULATIVE_STEPS_PER_EPISODE,
@@ -144,17 +144,19 @@ public class TaxiRmaxQDriver {
 		HashableStateFactory hs = new SimpleHashableStateFactory();
 		
 //		QlearningState();
-		LearningAgent RmaxQ = new RmaxQLearningAgent(root, hs, 100, 3, 0.01);
+		LearningAgent RmaxQ = new RmaxQLearningAgent(root, hs, 100, 5, 0.01);
 
-		for(int i = 1; i <= 50; i++){
+		for(int i = 1; i <= 5; i++){
 			Episode e = RmaxQ.runLearningEpisode(env);
 			e.write("output/episode_" + i);
 			env.resetEnvironment();
 		}
 		
 		Visualizer v = TaxiVisualizer.getVisualizer(5, 5);
-		new EpisodeSequenceVisualizer(v, domain, "output/" );
+		EpisodeSequenceVisualizer ep= new EpisodeSequenceVisualizer(v, domain, "output/" );
+		ep.setDefaultCloseOperation(ep.EXIT_ON_CLOSE);
 
+//		runTests();
 	}
 
 }

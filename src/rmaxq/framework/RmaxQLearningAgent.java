@@ -95,14 +95,21 @@ public class RmaxQLearningAgent implements LearningAgent {
 		GroundedTask rootSolve = root.getApplicableGroundedTasks(env.currentObservation()).get(0);
 		reachableStates = StateReachability.getReachableStates(initialState, root.getDomain(), hashingFactory);
 		
+		try{
+			System.out.println(this.transition.get(root).get(initialState).keySet().size());
+		}catch(Exception ex){}
+		
 		time = System.currentTimeMillis();
 		e = R_MaxQ(env.currentObservation(), rootSolve, e);
+		System.out.println(this.transition.size());
 		time = System.currentTimeMillis() - time;
 		return e;
 	}
 
 	protected Episode R_MaxQ(State s, GroundedTask task, Episode e){
 		HashableState hs = hashingFactory.hashState(s);
+//		System.out.println(task.actionName());
+		
 		if(task.t.isTaskPrimitive()){
 			Action a = task.getAction();
 			EnvironmentOutcome outcome = env.executeAction(a);
@@ -293,7 +300,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 					//get n(s, a, s')
 					if(!resultingStateCount.containsKey(hs))
 						resultingStateCount.put(hs, new HashMap<GroundedTask, Map<HashableState,Integer>>());
-				if(!resultingStateCount.get(hs).containsKey(task))
+					if(!resultingStateCount.get(hs).containsKey(task))
 						resultingStateCount.get(hs).put(task, new HashMap<HashableState, Integer>());
 					if(!resultingStateCount.get(hs).get(task).containsKey(hsprime))
 						resultingStateCount.get(hs).get(task).put(hsprime, 0);
@@ -438,7 +445,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 					if(Math.abs(newValue - oldValue) > maxChange)
 						maxChange = Math.abs(newValue - oldValue);
 				}
-				System.out.println(maxChange);
+//				System.out.println(maxChange);
 				if(maxChange < dynamicPrgEpsilon)
 					converged = true;
 			}
@@ -466,7 +473,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 		}
 
 		terminal.put(t, terminals);
-		System.out.println(terminals.size()+ " " + t.actionName());
+//		System.out.println(terminals.size()+ " " + t.actionName());
 		if(terminals.size() == 0)
 			throw new RuntimeException("no terminal");
 		return terminals;

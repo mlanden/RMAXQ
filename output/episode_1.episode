@@ -1,78 +1,166 @@
 !!burlap.behavior.singleagent.Episode
 actionSequence:
-- &id001 !!burlap.mdp.core.action.SimpleAction {name: pickup}
+- &id006 !!burlap.mdp.core.action.SimpleAction {name: west}
+- &id002 !!burlap.mdp.core.action.SimpleAction {name: south}
+- &id003 !!burlap.mdp.core.action.SimpleAction {name: east}
+- &id001 !!burlap.mdp.core.action.SimpleAction {name: north}
+- &id004 !!burlap.mdp.core.action.SimpleAction {name: pickup}
 - *id001
 - *id001
-- *id001
-- &id002 !!burlap.mdp.core.action.SimpleAction {name: east}
-- &id003 !!burlap.mdp.core.action.SimpleAction {name: south}
-- *id002
-- *id002
-- &id004 !!burlap.mdp.core.action.SimpleAction {name: north}
-- *id001
-- *id003
-- *id002
 - *id002
 - *id003
-- &id005 !!burlap.mdp.core.action.SimpleAction {name: west}
-- *id003
-- *id004
-- &id006 !!burlap.mdp.core.action.SimpleAction {name: dropoff}
-- *id002
-- *id004
+- *id001
+- &id005 !!burlap.mdp.core.action.SimpleAction {name: dropoff}
 - *id004
 - *id005
 - *id002
+- *id003
+- *id002
 - *id002
 - *id003
 - *id001
+- *id006
+- *id002
+- *id006
+- *id001
 - *id001
 - *id002
-- *id002
-- *id004
-- *id001
+- *id006
 - *id006
 - *id002
 - *id003
 - *id002
+- *id002
 - *id003
+- *id006
+- *id001
+- *id003
+- *id002
+- *id006
+- *id006
+- *id006
+- *id003
+- *id001
 - *id004
+- *id005
+- *id002
+- *id001
 - *id003
+- *id003
+- *id002
+- *id004
+- *id004
+- *id004
+- *id004
 - *id004
 - *id002
+- *id002
+- *id001
+- *id004
+- *id005
+- *id006
+- *id003
+- *id006
+- *id001
+- *id001
+- *id002
+- *id004
+- *id004
+- *id006
+- *id002
+- *id003
+- *id003
+- *id002
+- *id006
+- *id003
+- *id001
+- *id006
+- *id003
+- *id006
+- *id003
+- *id006
+- *id006
+- *id003
+- *id006
+- *id006
+- *id006
+- *id002
+- *id004
+- *id001
+- *id004
 - *id005
 - *id004
+- *id001
+- *id001
+- *id001
+- *id002
+- *id002
+- *id003
+- *id003
 - *id002
 - *id002
 - *id002
-- *id004
+- *id003
 - *id003
 - *id001
+- *id005
+- *id006
+- *id006
+- *id003
 - *id001
+- *id003
+- *id006
+- *id003
+- *id006
+- *id006
+- *id002
 - *id004
+- *id004
+- *id002
+- *id003
+- *id002
+- *id001
+- *id002
+- *id004
+- *id004
+- *id006
+- *id002
+- *id002
+- *id003
+- *id006
+- *id001
+- *id003
+- *id006
+- *id002
+- *id002
+- *id003
+- *id003
+- *id006
+- *id006
+- *id001
 - *id001
 - *id006
 - *id001
-- *id005
-- *id005
-- *id005
 - *id002
 - *id004
 - *id003
-- *id003
-- *id004
-- *id005
-- *id003
-- *id004
-- *id004
-- *id003
 - *id006
-rewardSequence: [-11.0, -11.0, -11.0, -11.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0,
-  -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -11.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0,
-  -11.0, -11.0, -1.0, -1.0, -1.0, -1.0, -11.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0,
-  -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -11.0, -11.0, -1.0, -1.0,
+- *id001
+- *id004
+- *id002
+- *id005
+rewardSequence: [-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -11.0,
+  -1.0, -11.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0,
+  -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0,
+  -1.0, -1.0, -1.0, -11.0, -1.0, -1.0, -1.0, -1.0, -1.0, -11.0, -11.0, -11.0, -11.0,
+  -11.0, -1.0, -1.0, -1.0, -1.0, -11.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -11.0,
   -11.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0,
-  -1.0, 19.0]
+  -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -11.0, -1.0, -1.0, -11.0, -1.0, -1.0, -1.0,
+  -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -11.0, -1.0, -1.0,
+  -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -11.0, -11.0, -1.0, -1.0, -1.0,
+  -1.0, -1.0, -11.0, -11.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0,
+  -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -11.0, -1.0, -1.0, -1.0,
+  -1.0, -1.0, 19.0]
 stateSequence:
 - !!taxi.state.TaxiState
   locations: &id007
@@ -109,32 +197,21 @@ stateSequence:
 - !!taxi.state.TaxiState
   locations: *id007
   passengers: *id008
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
-  walls: *id009
-- !!taxi.state.TaxiState
-  locations: *id007
-  passengers: *id008
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
-  walls: *id009
-- !!taxi.state.TaxiState
-  locations: *id007
-  passengers: *id008
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
-  walls: *id009
-- !!taxi.state.TaxiState
-  locations: *id007
-  passengers: *id008
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
-  walls: *id009
-- !!taxi.state.TaxiState
-  locations: *id007
-  passengers: *id008
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
-  walls: *id009
-- !!taxi.state.TaxiState
-  locations: *id007
-  passengers: *id008
   taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers:
+  - {goalLocation: red, inTaxi: true, justPickedUp: false, name: passenger0, originalSourceLocation: blue,
+    pickedUpAtLeastOnce: true, x: 0, y: 1}
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: true, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers:
+  - {goalLocation: red, inTaxi: true, justPickedUp: false, name: passenger0, originalSourceLocation: blue,
+    pickedUpAtLeastOnce: true, x: 0, y: 1}
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: true, x: 0, y: 1}
   walls: *id009
 - !!taxi.state.TaxiState
   locations: *id007
@@ -161,29 +238,15 @@ stateSequence:
   locations: *id007
   passengers:
   - {goalLocation: red, inTaxi: true, justPickedUp: false, name: passenger0, originalSourceLocation: blue,
-    pickedUpAtLeastOnce: true, x: 0, y: 0}
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: true, x: 0, y: 0}
+    pickedUpAtLeastOnce: true, x: 0, y: 1}
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: true, x: 0, y: 1}
   walls: *id009
 - !!taxi.state.TaxiState
   locations: *id007
   passengers:
-  - {goalLocation: red, inTaxi: true, justPickedUp: false, name: passenger0, originalSourceLocation: blue,
-    pickedUpAtLeastOnce: true, x: 0, y: 0}
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: true, x: 0, y: 0}
-  walls: *id009
-- !!taxi.state.TaxiState
-  locations: *id007
-  passengers:
-  - {goalLocation: red, inTaxi: true, justPickedUp: false, name: passenger0, originalSourceLocation: blue,
-    pickedUpAtLeastOnce: true, x: 0, y: 0}
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: true, x: 0, y: 0}
-  walls: *id009
-- !!taxi.state.TaxiState
-  locations: *id007
-  passengers:
-  - {goalLocation: red, inTaxi: true, justPickedUp: false, name: passenger0, originalSourceLocation: blue,
-    pickedUpAtLeastOnce: true, x: 0, y: 0}
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: true, x: 0, y: 0}
+  - {goalLocation: red, inTaxi: false, justPickedUp: false, name: passenger0, originalSourceLocation: blue,
+    pickedUpAtLeastOnce: true, x: 0, y: 1}
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
   walls: *id009
 - !!taxi.state.TaxiState
   locations: *id007
@@ -202,7 +265,27 @@ stateSequence:
 - !!taxi.state.TaxiState
   locations: *id007
   passengers: *id010
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id010
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id010
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id010
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id010
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
   walls: *id009
 - !!taxi.state.TaxiState
   locations: *id007
@@ -217,7 +300,67 @@ stateSequence:
 - !!taxi.state.TaxiState
   locations: *id007
   passengers: *id010
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id010
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id010
   taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id010
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id010
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id010
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id010
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id010
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id010
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id010
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id010
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id010
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id010
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
   walls: *id009
 - !!taxi.state.TaxiState
   locations: *id007
@@ -276,57 +419,7 @@ stateSequence:
 - !!taxi.state.TaxiState
   locations: *id007
   passengers: *id011
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
-  walls: *id009
-- !!taxi.state.TaxiState
-  locations: *id007
-  passengers: *id011
   taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
-  walls: *id009
-- !!taxi.state.TaxiState
-  locations: *id007
-  passengers: *id011
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
-  walls: *id009
-- !!taxi.state.TaxiState
-  locations: *id007
-  passengers: *id011
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
-  walls: *id009
-- !!taxi.state.TaxiState
-  locations: *id007
-  passengers: *id011
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
-  walls: *id009
-- !!taxi.state.TaxiState
-  locations: *id007
-  passengers: *id011
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
-  walls: *id009
-- !!taxi.state.TaxiState
-  locations: *id007
-  passengers: *id011
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
-  walls: *id009
-- !!taxi.state.TaxiState
-  locations: *id007
-  passengers: *id011
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
-  walls: *id009
-- !!taxi.state.TaxiState
-  locations: *id007
-  passengers: *id011
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
-  walls: *id009
-- !!taxi.state.TaxiState
-  locations: *id007
-  passengers: *id011
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
-  walls: *id009
-- !!taxi.state.TaxiState
-  locations: *id007
-  passengers: *id011
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
   walls: *id009
 - !!taxi.state.TaxiState
   locations: *id007
@@ -361,6 +454,190 @@ stateSequence:
 - !!taxi.state.TaxiState
   locations: *id007
   passengers: *id011
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id011
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id011
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id011
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id011
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id011
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers:
+  - {goalLocation: red, inTaxi: true, justPickedUp: false, name: passenger0, originalSourceLocation: blue,
+    pickedUpAtLeastOnce: true, x: 0, y: 1}
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: true, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: &id012
+  - {goalLocation: red, inTaxi: false, justPickedUp: false, name: passenger0, originalSourceLocation: blue,
+    pickedUpAtLeastOnce: true, x: 0, y: 1}
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id012
   taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
   walls: *id009
 - !!taxi.state.TaxiState
@@ -409,15 +686,15 @@ stateSequence:
   locations: *id007
   passengers:
   - {goalLocation: red, inTaxi: true, justPickedUp: false, name: passenger0, originalSourceLocation: blue,
-    pickedUpAtLeastOnce: true, x: 0, y: 1}
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: true, x: 0, y: 1}
+    pickedUpAtLeastOnce: true, x: 0, y: 0}
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: true, x: 0, y: 0}
   walls: *id009
 - !!taxi.state.TaxiState
   locations: *id007
   passengers:
   - {goalLocation: red, inTaxi: true, justPickedUp: false, name: passenger0, originalSourceLocation: blue,
-    pickedUpAtLeastOnce: true, x: 0, y: 1}
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: true, x: 0, y: 1}
+    pickedUpAtLeastOnce: true, x: 0, y: 0}
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: true, x: 0, y: 0}
   walls: *id009
 - !!taxi.state.TaxiState
   locations: *id007
@@ -437,15 +714,29 @@ stateSequence:
   locations: *id007
   passengers:
   - {goalLocation: red, inTaxi: true, justPickedUp: false, name: passenger0, originalSourceLocation: blue,
-    pickedUpAtLeastOnce: true, x: 0, y: 1}
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: true, x: 0, y: 1}
+    pickedUpAtLeastOnce: true, x: 0, y: 0}
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: true, x: 0, y: 0}
   walls: *id009
 - !!taxi.state.TaxiState
   locations: *id007
   passengers:
   - {goalLocation: red, inTaxi: true, justPickedUp: false, name: passenger0, originalSourceLocation: blue,
-    pickedUpAtLeastOnce: true, x: 0, y: 1}
-  taxi: {fuel: 0, name: taxi0, taxiOccupied: true, x: 0, y: 1}
+    pickedUpAtLeastOnce: true, x: 0, y: 0}
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: true, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers:
+  - {goalLocation: red, inTaxi: true, justPickedUp: false, name: passenger0, originalSourceLocation: blue,
+    pickedUpAtLeastOnce: true, x: 0, y: 0}
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: true, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers:
+  - {goalLocation: red, inTaxi: true, justPickedUp: false, name: passenger0, originalSourceLocation: blue,
+    pickedUpAtLeastOnce: true, x: 0, y: 0}
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: true, x: 0, y: 0}
   walls: *id009
 - !!taxi.state.TaxiState
   locations: *id007
@@ -460,6 +751,223 @@ stateSequence:
   - {goalLocation: red, inTaxi: true, justPickedUp: false, name: passenger0, originalSourceLocation: blue,
     pickedUpAtLeastOnce: true, x: 0, y: 1}
   taxi: {fuel: 0, name: taxi0, taxiOccupied: true, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: &id013
+  - {goalLocation: red, inTaxi: false, justPickedUp: false, name: passenger0, originalSourceLocation: blue,
+    pickedUpAtLeastOnce: true, x: 0, y: 1}
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 0}
+  walls: *id009
+- !!taxi.state.TaxiState
+  locations: *id007
+  passengers: *id013
+  taxi: {fuel: 0, name: taxi0, taxiOccupied: false, x: 0, y: 1}
   walls: *id009
 - !!taxi.state.TaxiState
   locations: *id007
