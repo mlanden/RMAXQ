@@ -19,7 +19,7 @@ public class TaxiRewardFunction implements RewardFunction {
 
     public double stepReward = -1.0;
     public double illegalAction = -10;
-    public double goalReward = +20;
+    public double goalReward = +0;
 
     TerminalFunction tf;
     Integer numPass = 0;
@@ -33,7 +33,7 @@ public class TaxiRewardFunction implements RewardFunction {
     public double reward(State state, Action groundedAction, State state1) {
 
         if(tf.isTerminal(state1)){
-            return numPass * goalReward + stepReward;
+            return goalReward;
         }
         // illegal dropoff
         if(groundedAction.actionName().equals(TaxiDomain.ACTION_DROPOFF)){
@@ -59,7 +59,7 @@ public class TaxiRewardFunction implements RewardFunction {
                 }
             }
             if(!flag){
-                return illegalAction+stepReward;
+                return illegalAction;
             }
 
         }
@@ -70,7 +70,7 @@ public class TaxiRewardFunction implements RewardFunction {
             boolean taxiOccupied = ((TaxiAgent)taxi).taxiOccupied;
 
             if(taxiOccupied){
-                return illegalAction + stepReward;
+                return illegalAction;
             }
             List<ObjectInstance> passengers = ((TaxiState)state).objectsOfClass(TaxiDomain.PASSENGERCLASS);
             int taxiX = ((TaxiAgent)taxi).x;
@@ -86,7 +86,7 @@ public class TaxiRewardFunction implements RewardFunction {
                 }
             }
             if(!flag){
-                return illegalAction+stepReward;
+                return illegalAction;
             }
         }
 

@@ -108,50 +108,35 @@ public class TaxiRmaxQDriver {
 			public LearningAgent generateAgent() {
 				TaskNode root = setupHeirarcy();
 				HashableStateFactory hs = new SimpleHashableStateFactory();
-				return new RmaxQLearningAgent(root, hs, 100, 5, 0.001);
+				return new RmaxQLearningAgent(root, hs, 100, 5, 0.01);
 			}
 		};
 		
-		LearningAlgorithmExperimenter exp = new LearningAlgorithmExperimenter(env, 5, 1000, RmaxQ);
-		exp.setUpPlottingConfiguration(500, 250, 2, 1000,
+		LearningAlgorithmExperimenter exp = new LearningAlgorithmExperimenter(env, 1, 100, RmaxQ);
+		exp.setUpPlottingConfiguration(1000, 500, 2, 1000,
 				TrialMode.MOST_RECENT_AND_AVERAGE,
-				PerformanceMetric.CUMULATIVE_STEPS_PER_EPISODE,
+				PerformanceMetric.CUMULATIVE_REWARD_PER_EPISODE,
 				PerformanceMetric.AVERAGE_EPISODE_REWARD);
 
 		exp.startExperiment();
 	}
-	
-	public static void QlearningState(){
-		TaxiTerminationFunction tf = new TaxiTerminationFunction();
-		TaxiRewardFunction rf = new TaxiRewardFunction(1, tf);
-		TaxiDomain TDGen = new TaxiDomain(rf, tf);
-		
-		TDGen.setFickleTaxi(false);
-		TDGen.setIncludeFuel(false);
-		OOSADomain td = TDGen.generateDomain();
-		State s = TaxiDomain.getClassicState(td, false);
-		env = new SimulatedEnvironment(td, s);
-		QLearning ql  = new QLearning(td, .99, new SimpleHashableStateFactory(), 0, .01);
-		Episode e = ql.runLearningEpisode(env);
-		e.write("output/episode_1");
-		
-		Visualizer v = TaxiVisualizer.getVisualizer(5, 5);
-		new EpisodeSequenceVisualizer(v, domain, "output/" );
 
-	}
 	public static void main(String[] args) {
 		TaskNode root = setupHeirarcy();
 		HashableStateFactory hs = new SimpleHashableStateFactory();
 		
 //		QlearningState();
-		LearningAgent RmaxQ = new RmaxQLearningAgent(root, hs, 100, 5, 0.01);
+		RmaxQLearningAgent RmaxQ = new RmaxQLearningAgent(root, hs, 100, 5, 0.01);
 
-		for(int i = 1; i <= 5; i++){
-			Episode e = RmaxQ.runLearningEpisode(env);
-			e.write("output/episode_" + i);
-			env.resetEnvironment();
-		}
-		
+//		for(int i = 1; i <= 10; i++){
+//			Episode e = RmaxQ.runLearningEpisode(env);
+//			e.write("output/episode_" + i);
+//			System.out.println(e.rewardSequence);
+//			System.out.println("Episode " + i + " time " + RmaxQ.getTime());
+//			env.resetEnvironment();
+//		}
+//		
+		runTests();
 		Visualizer v = TaxiVisualizer.getVisualizer(5, 5);
 		EpisodeSequenceVisualizer ep= new EpisodeSequenceVisualizer(v, domain, "output/" );
 		ep.setDefaultCloseOperation(ep.EXIT_ON_CLOSE);

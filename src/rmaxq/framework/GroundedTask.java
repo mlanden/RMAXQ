@@ -47,40 +47,46 @@ public class GroundedTask {
         GroundedTask o = (GroundedTask) other;
 
 
-        if (!this.t.name().equals(o.t.name())) {
-            return false;
-        }
-
+//        if (!this.t.name().equals(o.t.name())) {
+//            return false;
+//        }
+//
         if(!this.action.actionName().equals(o.action.actionName())){
-            return false;
+            return false; 
         }
 
-        if(this.action instanceof ObjectParameterizedAction){
-            if(!(o.action instanceof ObjectParameterizedAction)){
-                return false;
-            }
-
-            String[] params_this = ((ObjectParameterizedAction)this.action).getObjectParameters();
-            String[] params_other = ((ObjectParameterizedAction)o.action).getObjectParameters();
-
-            if(params_other.length!=params_this.length){
-                return false;
-            }
-
-            boolean flag = true;
-
-            for(int i=0;i<params_other.length;i++){
-                if(!params_other[i].equals(params_this[i])){
-                    flag = false;
-                    break;
-                }
-            }
-
-            return flag;
-       
-        }
+//        if(this.action instanceof ObjectParameterizedAction){
+//            if(!(o.action instanceof ObjectParameterizedAction)){
+//                return false;
+//            }
+//
+//            String[] params_this = ((ObjectParameterizedAction)this.action).getObjectParameters();
+//            String[] params_other = ((ObjectParameterizedAction)o.action).getObjectParameters();
+//
+//            if(params_other.length!=params_this.length){
+//                return false;
+//            }
+//
+//            boolean flag = true;
+//
+//            for(int i=0;i<params_other.length;i++){
+//                if(!params_other[i].equals(params_this[i])){
+//                    flag = false;
+//                    break;
+//                }
+//            }
+//
+//            return flag;
+//       
+//        }
         return true;
 
     }
 
+    @Override
+    public int hashCode() {
+        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder(31, 7);
+        hashCodeBuilder.append(t).append(action);
+        return hashCodeBuilder.toHashCode();
+    }
 }

@@ -1,6 +1,6 @@
 package rmaxq.framework;
 
-import java.util.ArrayList;
+import java.util.ArrayList; 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +8,6 @@ import java.util.Map;
 import burlap.behavior.policy.GreedyQPolicy;
 import burlap.behavior.policy.SolverDerivedPolicy;
 import burlap.behavior.singleagent.Episode;
-import burlap.behavior.singleagent.auxiliary.StateReachability;
 import burlap.behavior.singleagent.learning.LearningAgent;
 import burlap.mdp.core.action.Action;
 import burlap.mdp.core.state.State;
@@ -84,6 +83,9 @@ public class RmaxQLearningAgent implements LearningAgent {
 		this.threshold = threshold;
 	}
 	 
+	public long getTime(){
+		return time;
+	}
 	public Episode runLearningEpisode(Environment env) {
 		return runLearningEpisode(env, -1);
 	}
@@ -95,13 +97,10 @@ public class RmaxQLearningAgent implements LearningAgent {
 		GroundedTask rootSolve = root.getApplicableGroundedTasks(env.currentObservation()).get(0);
 		reachableStates = StateReachability.getReachableStates(initialState, root.getDomain(), hashingFactory);
 		
-		try{
-			System.out.println(this.transition.get(root).get(initialState).keySet().size());
-		}catch(Exception ex){}
-		
+		//look at equals in grounded task
 		time = System.currentTimeMillis();
 		e = R_MaxQ(env.currentObservation(), rootSolve, e);
-		System.out.println(this.transition.size());
+//		System.out.println(this.transition.keySet().size());
 		time = System.currentTimeMillis() - time;
 		return e;
 	}
