@@ -14,6 +14,7 @@ import burlap.behavior.singleagent.learning.tdmethods.QLearning;
 import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.action.ActionType;
 import burlap.mdp.core.state.State;
+import burlap.mdp.singleagent.common.VisualActionObserver;
 import burlap.mdp.singleagent.environment.SimulatedEnvironment;
 import burlap.mdp.singleagent.model.RewardFunction;
 import burlap.mdp.singleagent.oo.OOSADomain;
@@ -46,8 +47,12 @@ public class TaxiRmaxQDriver {
         TDGen.setIncludeFuel(false);
         OOSADomain td = TDGen.generateDomain();
         domain = td;
-        State s = TaxiDomain.getTinyClassicState(domain, false);
+        State s = TaxiDomain.getSmallClassicState(domain, false);
         env = new SimulatedEnvironment(td, s);
+
+        VisualActionObserver obs = new VisualActionObserver(td, TaxiVisualizer.getVisualizer(5, 5));
+        obs.initGUI();
+        env.addObservers(obs);
         
         List<TaxiPassenger> passengers = ((TaxiState)s).passengers;
         List<TaxiLocation> locations = ((TaxiState)s).locations;
@@ -128,7 +133,7 @@ public class TaxiRmaxQDriver {
 //		QlearningState();
 		RmaxQLearningAgent RmaxQ = new RmaxQLearningAgent(root, hs, 100, 5, 0.01);
 
-		for(int i = 1; i <= 10; i++){
+		for(int i = 1; i <= 1; i++){
 			Episode e = RmaxQ.runLearningEpisode(env);
 			e.write("output/episode_" + i);
 			System.out.println("Episode " + i + " time " + RmaxQ.getTime());
