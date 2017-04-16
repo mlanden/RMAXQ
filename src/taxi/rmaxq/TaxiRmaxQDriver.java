@@ -133,7 +133,7 @@ public class TaxiRmaxQDriver {
 //		QlearningState();
 		RmaxQLearningAgent RmaxQ = new RmaxQLearningAgent(root, hs, 100, 5, 0.01);
 
-		for(int i = 1; i <= 1; i++){
+		for(int i = 1; i <= 10; i++){
 			Episode e = RmaxQ.runLearningEpisode(env);
 			e.write("output/episode_" + i);
 			System.out.println("Episode " + i + " time " + RmaxQ.getTime());

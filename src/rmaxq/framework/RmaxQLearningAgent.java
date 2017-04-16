@@ -330,6 +330,11 @@ public class RmaxQLearningAgent implements LearningAgent {
 			while(!converged){
 				double maxChange = 0;
 				
+				//temporary holders for batch updates
+				Map<HashableState, Double> tempReward = new HashMap<HashableState, Double>();
+				Map <HashableState, Map<HashableState, Double>> tempTransition 
+					= new HashMap<HashableState, Map<HashableState,Double>>();
+				
 				if(!envolope.containsKey(task))
 					envolope.put(task, new ArrayList<State>());
 				List<State> envelopeA = envolope.get(task);
@@ -341,7 +346,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 					if(!reward.get(task).containsKey(hsprime))
 						reward.get(task).put(hsprime, Vmax);
 					double prevReward = reward.get(task).get(hsprime);
-					double oldValue = qvalues.value(sprime);
+//					double oldValue = qvalues.value(sprime);
 
 					Action maxqAction = taskFromPolicy.action(sprime);
 					if(!groundedTaskMap.containsKey(maxqAction.actionName()))
@@ -365,26 +370,26 @@ public class RmaxQLearningAgent implements LearningAgent {
 					
 					double weightedReward = 0;
 					// equation 4
-					for(HashableState nextState : childProbabilities.keySet()){
+					for(HashableState hnext : childProbabilities.keySet()){
 						//get Ra(nextstate)
-						if(task.t.terminal(nextState.s(), task.action))
+						if(task.t.terminal(hnext.s(), task.action))
 							continue;
 						
-						HashableState hnext = hashingFactory.hashState(nextState.s());
 						if(!reward.containsKey(task))
 							reward.put(task, new HashMap<HashableState, Double>());
 						if(!reward.get(task).containsKey(hnext))
 							reward.get(task).put(hnext, Vmax);
 						double nextReward = reward.get(task).get(hnext);
 						
-						weightedReward += childProbabilities.get(nextState) * nextReward;
+						weightedReward += childProbabilities.get(hnext) * nextReward;
 					}
 					
 					if(!reward.containsKey(task))
 						reward.put(task, new HashMap<HashableState, Double>());
 					
 					double newReward = actionReward + weightedReward;
-					reward.get(task).put(hsprime, newReward);
+					
+					tempReward.put(hsprime, newReward);
 					
 					//find max change for value iteration
 					if(Math.abs(newReward - prevReward) > maxChange)
@@ -417,21 +422,21 @@ public class RmaxQLearningAgent implements LearningAgent {
 						Map<HashableState, Double> childFromSp = transition.get(childFromPolicy).get(hsprime);
 						//sum over all p pia(s) (s',.)
 						// eq 5
-						for(HashableState hspprime: childFromSp.keySet()){
-							if(task.t.terminal(hspprime.s(), task.action))
+						for(HashableState hnext: childFromSp.keySet()){
+							if(task.t.terminal(hnext.s(), task.action))
 								continue;
 							
-							double psprimeTospprime = childFromSp.get(hspprime);
+							double psprimeTospprime = childFromSp.get(hnext);
 							//pa (s'',x)
 							if(!transition.containsKey(task))
 								transition.put(task, new HashMap<HashableState, Map<HashableState,Double>>());
-							if(!transition.get(task).containsKey(hspprime))
-								transition.get(task).put(hspprime, new HashMap<HashableState, Double>());
-							if(!transition.get(task).get(hspprime).containsKey(hx))
-								transition.get(task).get(hspprime).put(hx, 0.);
-							double pspptozx = transition.get(task).get(hspprime).get(hx);
+							if(!transition.get(task).containsKey(hnext))
+								transition.get(task).put(hnext, new HashMap<HashableState, Double>());
+							if(!transition.get(task).get(hnext).containsKey(hx))
+								transition.get(task).get(hnext).put(hx, 0.);
+							double pspptohx = transition.get(task).get(hnext).get(hx);
 							
-							weightedTransition += psprimeTospprime * pspptozx;
+							weightedTransition += psprimeTospprime * pspptohx;
 						}
 						double newProb = childProbability + weightedTransition;
 						
@@ -439,22 +444,29 @@ public class RmaxQLearningAgent implements LearningAgent {
 							maxChange = Math.abs(newProb - oldPrabability);
 						
 						//set pa(s',x)
-						if(!transition.containsKey(task))
-							transition.put(task, new HashMap<HashableState, Map<HashableState,Double>>());
-						if(!transition.get(task).containsKey(hsprime))
-							transition.get(task).put(hsprime, new HashMap<HashableState, Double>());
-						transition.get(task).get(hsprime).put(hx, newProb);
+						if(!tempTransition.containsKey(hsprime))
+							tempTransition.put(hsprime, new HashMap<HashableState, Double>());
+						tempTransition.get(hsprime).put(hx, newProb);
 					}
 					
-					//recompute policy and check v
-//					computePolicy(s, task, true);
-					double newValue = qvalues.value(sprime);
-					if(Math.abs(newValue - oldValue) > maxChange)
-						maxChange = Math.abs(newValue - oldValue);
+//					double newValue = qvalues.value(sprime);
+//					if(Math.abs(newValue - oldValue) > maxChange)
+//						maxChange = Math.abs(newValue - oldValue);
 				}
-//				System.out.println(maxChange);
+				System.out.println(maxChange);
 				if(maxChange < dynamicPrgEpsilon)
 					converged = true;
+				
+				//overwrite reward and transition
+				for(HashableState hashState : tempReward.keySet()){
+					this.reward.get(task).put(hashState, tempReward.get(hashState));
+				}
+				
+				for(HashableState s1 : tempTransition.keySet()){
+					for(HashableState s2 : tempTransition.get(s1).keySet()){
+						this.transition.get(task).get(s1).put(s2, tempTransition.get(s1).get(s2));
+					}
+				}
 			}
 		}
 	}
