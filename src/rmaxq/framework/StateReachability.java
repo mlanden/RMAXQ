@@ -43,11 +43,11 @@ public class StateReachability {
 	 * @param usingHashFactory the state hashing factory to use for indexing states and testing equality.
 	 * @return the list of {@link State} objects that are reachable from a source state.
 	 */
-	public static List <State> getReachableStates(State from, SADomain inDomain, HashableStateFactory usingHashFactory){
+	public static List <HashableState> getReachableStates(State from, SADomain inDomain, HashableStateFactory usingHashFactory){
 		Set<HashableState> hashed = getReachableHashedStates(from, inDomain, usingHashFactory);
-		List<State> states = new ArrayList<State>(hashed.size());
+		List<HashableState> states = new ArrayList<HashableState>(hashed.size());
 		for(HashableState sh : hashed){
-			states.add(sh.s());
+			states.add(sh);
 		}
 		return states;
 

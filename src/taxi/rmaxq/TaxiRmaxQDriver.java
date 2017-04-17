@@ -42,17 +42,17 @@ public class TaxiRmaxQDriver {
 
         TaxiDomain TDGen = new TaxiDomain(taxiRF, taxiTF);
         
-//        TDGen.setTransitionDynamicsLikeFickleTaxiProlem();
-        TDGen.setFickleTaxi(false);
+        TDGen.setTransitionDynamicsLikeFickleTaxiProlem();
+        TDGen.setFickleTaxi(true);
         TDGen.setIncludeFuel(false);
         OOSADomain td = TDGen.generateDomain();
         domain = td;
         State s = TaxiDomain.getSmallClassicState(domain, false);
         env = new SimulatedEnvironment(td, s);
 
-        VisualActionObserver obs = new VisualActionObserver(td, TaxiVisualizer.getVisualizer(5, 5));
-        obs.initGUI();
-        env.addObservers(obs);
+//        VisualActionObserver obs = new VisualActionObserver(td, TaxiVisualizer.getVisualizer(5, 5));
+//        obs.initGUI();
+//        env.addObservers(obs);
         
         List<TaxiPassenger> passengers = ((TaxiState)s).passengers;
         List<TaxiLocation> locations = ((TaxiState)s).locations;
@@ -120,7 +120,7 @@ public class TaxiRmaxQDriver {
 		LearningAlgorithmExperimenter exp = new LearningAlgorithmExperimenter(env, 1, 100, RmaxQ);
 		exp.setUpPlottingConfiguration(1000, 500, 2, 1000,
 				TrialMode.MOST_RECENT_AND_AVERAGE,
-				PerformanceMetric.CUMULATIVE_REWARD_PER_EPISODE,
+				PerformanceMetric.STEPS_PER_EPISODE,
 				PerformanceMetric.AVERAGE_EPISODE_REWARD);
 
 		exp.startExperiment();
@@ -133,14 +133,16 @@ public class TaxiRmaxQDriver {
 //		QlearningState();
 		RmaxQLearningAgent RmaxQ = new RmaxQLearningAgent(root, hs, 100, 5, 0.01);
 
+		long totalTime = 0;
 		for(int i = 1; i <= 10; i++){
 			Episode e = RmaxQ.runLearningEpisode(env);
 			e.write("output/episode_" + i);
-			System.out.println("Episode " + i + " time " + RmaxQ.getTime());
+			totalTime +=RmaxQ.getTime() / 1000.0;
+			System.out.println("Episode " + i + " time " + RmaxQ.getTime() / 1000.0 + " average " + ((double)totalTime /i ));
 			env.resetEnvironment();
 		}
 //		
-//		runTests();
+		runTests();
 		Visualizer v = TaxiVisualizer.getVisualizer(5, 5);
 		EpisodeSequenceVisualizer ep= new EpisodeSequenceVisualizer(v, domain, "output/" );
 		ep.setDefaultCloseOperation(ep.EXIT_ON_CLOSE);
