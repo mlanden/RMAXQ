@@ -112,8 +112,8 @@ public class TaxiRmaxQDriver {
 			@Override
 			public LearningAgent generateAgent() {
 				TaskNode root = setupHeirarcy();
-				HashableStateFactory hs = new SimpleHashableStateFactory();
-				return new RmaxQLearningAgent(root, hs, 100, 5, 0.01);
+				HashableStateFactory hs = new SimpleHashableStateFactory(true);
+				return new RmaxQLearningAgent(root, hs, env.currentObservation(), 100, 5, 0.01);
 			}
 		};
 		
@@ -128,17 +128,17 @@ public class TaxiRmaxQDriver {
 
 	public static void main(String[] args) {
 		TaskNode root = setupHeirarcy();
-		HashableStateFactory hs = new SimpleHashableStateFactory();
+		HashableStateFactory hs = new SimpleHashableStateFactory(true);
 		
 //		QlearningState();
-		RmaxQLearningAgent RmaxQ = new RmaxQLearningAgent(root, hs, 100, 5, 0.01);
+		RmaxQLearningAgent RmaxQ = new RmaxQLearningAgent(root, hs, env.currentObservation(), 100, 5, 0.01);
 
 		long totalTime = 0;
 		for(int i = 1; i <= 10; i++){
 			Episode e = RmaxQ.runLearningEpisode(env);
 			e.write("output/episode_" + i);
 			totalTime +=RmaxQ.getTime() / 1000.0;
-			System.out.println("Episode " + i + " time " + RmaxQ.getTime() / 1000.0 + " average " + ((double)totalTime /i ));
+			System.out.println("Episode " + i + " time " + RmaxQ.getTime() / 1000.0 + " average " + ((double)totalTime /(double)i ));
 			env.resetEnvironment();
 		}
 //		

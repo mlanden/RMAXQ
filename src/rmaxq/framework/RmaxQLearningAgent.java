@@ -65,7 +65,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 	
 	private List<HashableState> reachableStates = new ArrayList<HashableState>();
 	private long time = 0;
-	public RmaxQLearningAgent(TaskNode root, HashableStateFactory hs, double vmax, int threshold, double maxDelta){
+	public RmaxQLearningAgent(TaskNode root, HashableStateFactory hs, State initState, double vmax, int threshold, double maxDelta){
 		this.root = root;
 		this.reward = new HashMap<GroundedTask, Map<HashableState,Double>>();
 		this.transition = new HashMap<GroundedTask, Map<HashableState, Map<HashableState, Double>>>();
@@ -81,6 +81,8 @@ public class RmaxQLearningAgent implements LearningAgent {
 		this.hashingFactory = hs;
 		this.Vmax = vmax;
 		this.threshold = threshold;
+		this.initialState = initState;
+		reachableStates = StateReachability.getReachableStates(initialState, root.getDomain(), hashingFactory);
 	}
 	 
 	public long getTime(){
@@ -92,16 +94,13 @@ public class RmaxQLearningAgent implements LearningAgent {
 
 	public Episode runLearningEpisode(Environment env, int maxSteps) {
 		this.env = env;
-		this.initialState = env.currentObservation();
 		Episode e = new Episode(initialState);
 		GroundedTask rootSolve = root.getApplicableGroundedTasks(env.currentObservation()).get(0);
-		reachableStates = StateReachability.getReachableStates(initialState, root.getDomain(), hashingFactory);
 		
 		//look at equals in grounded task
 		time = System.currentTimeMillis();
 		HashableState hs = hashingFactory.hashState(env.currentObservation());
 		e = R_MaxQ(hs, rootSolve, e);
-//		System.out.println(this.transition.keySet().size());
 		time = System.currentTimeMillis() - time;
 		return e;
 	}
