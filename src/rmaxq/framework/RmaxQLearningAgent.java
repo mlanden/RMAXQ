@@ -152,18 +152,16 @@ public class RmaxQLearningAgent implements LearningAgent {
 			return e;
 		}else{ //task is composute
 			boolean terminal = false;
+			if(!qProvider.containsKey(task))
+				qProvider.put(task, new QProviderRmaxQ(hashingFactory, task));
+			QProviderRmaxQ qvalues = qProvider.get(task);
+			if(!qPolicy.containsKey(task))
+				qPolicy.put(task, new GreedyQPolicy());
+			SolverDerivedPolicy taskFromPolicy = qPolicy.get(task);
+			taskFromPolicy.setSolver(qvalues);
+			
 			do{
 				computePolicy(hs, task, true);
-				
-				if(!qProvider.containsKey(task))
-					qProvider.put(task, new QProviderRmaxQ(hashingFactory, task));
-				QProviderRmaxQ qvalues = qProvider.get(task);
-				
-				if(!qPolicy.containsKey(task))
-					qPolicy.put(task, new GreedyQPolicy());
-				SolverDerivedPolicy taskFromPolicy = qPolicy.get(task);
-				taskFromPolicy.setSolver(qvalues);
-				
 				Action maxqAction = taskFromPolicy.action(hs.s());
 				if(!groundedTaskMap.containsKey(maxqAction.actionName()))
 					addChildTasks(task, hs.s());
@@ -183,19 +181,20 @@ public class RmaxQLearningAgent implements LearningAgent {
 	}
 	
 	public void computePolicy(HashableState hs, GroundedTask task, boolean prepare){
-		if(prepare)
-			prepareEnvolope(hs, task);
+		if(!envolope.containsKey(task))
+			envolope.put(task, new ArrayList<HashableState>());
+		prepareEnvolope(hs, task);
+		
 		if(!qProvider.containsKey(task))
 			qProvider.put(task, new QProviderRmaxQ(hashingFactory, task));
 		QProviderRmaxQ qp = qProvider.get(task);
+//		if(!envolope.containsKey(task))
+//			envolope.put(task, new ArrayList<HashableState>());
+		List<HashableState> envolopA = envolope.get(task);
 		
 		boolean converged = false;
 		while(!converged){   
 			double maxDelta = 0;
-			if(!envolope.containsKey(task))
-				envolope.put(task, new ArrayList<HashableState>());
-			List<HashableState> envolopA = envolope.get(task);
-			
 			for(int i = 0; i < envolopA.size(); i++){
 				HashableState hsprime = envolopA.get(i);
 				List<GroundedTask> ActionIns = getTaskActions(task, hsprime.s());
@@ -234,12 +233,12 @@ public class RmaxQLearningAgent implements LearningAgent {
 		}
 	}
 	
+	
+	
+	
 	public void prepareEnvolope(HashableState hs, GroundedTask task){
-		if(!envolope.containsKey(task))
-			envolope.put(task, new ArrayList<HashableState>());
 		List<HashableState> envelope = envolope.get(task);
-		
-		if(!envelope.contains(hs)){
+		 if(!envelope.contains(hs)){
 			envelope.add(hs);
 			List<GroundedTask> ActionIns = getTaskActions(task, hs.s());
 			for(int i = 0; i < ActionIns.size(); i++){
@@ -304,18 +303,18 @@ public class RmaxQLearningAgent implements LearningAgent {
 					
 					//set Pa(s, s') = n(s,a,s') / n(s, a)
 					double p_assp = n_sasp / n_sa;
-					if(!transition.containsKey(task))
-						transition.put(task, new HashMap<HashableState, Map<HashableState,Double>>());
-					if(!transition.get(task).containsKey(hs))
-						transition.get(task).put(hs, new HashMap<HashableState, Double>());
+//					if(!transition.containsKey(task))
+//						transition.put(task, new HashMap<HashableState, Map<HashableState,Double>>());
+//					if(!transition.get(task).containsKey(hs))
+//						transition.get(task).put(hs, new HashMap<HashableState, Double>());
 					transition.get(task).get(hs).put(hsprime, p_assp);
 				}
 			}
 		}else{
 			computePolicy(hs, task, true);
 			
-			if(!qProvider.containsKey(task))
-				qProvider.put(task, new QProviderRmaxQ(hashingFactory, task));
+//			if(!qProvider.containsKey(task))
+//				qProvider.put(task, new QProviderRmaxQ(hashingFactory, task));
 			QProviderRmaxQ qvalues = qProvider.get(task);
 			
 			if(!qPolicy.containsKey(task))
@@ -323,24 +322,23 @@ public class RmaxQLearningAgent implements LearningAgent {
 			SolverDerivedPolicy taskFromPolicy = qPolicy.get(task);
 			taskFromPolicy.setSolver(qvalues);
 			
+			if(!transition.containsKey(task))
+				transition.put(task, new HashMap<HashableState, Map<HashableState,Double>>());
+			if(!envolope.containsKey(task))
+				envolope.put(task, new ArrayList<HashableState>());
+			List<HashableState> envelopeA = envolope.get(task);
 			boolean converged = false;
 			while(!converged){
 				double maxChange = 0;
 				//temporary holders for batch updates
 				Map <HashableState, Map<HashableState, Double>> tempTransition 
 					= new HashMap<HashableState, Map<HashableState,Double>>();
-	
-				if(!envolope.containsKey(task))
-					envolope.put(task, new ArrayList<HashableState>());
-				List<HashableState> envelopeA = envolope.get(task);
 				for(HashableState hsprime : envelopeA){
 					//for all s in ta
 					// equation 7
 					List<HashableState> terminal = getTerminalStates(task);
 					for(HashableState hx :terminal){
 						//get current pa(s',x)
-						if(!transition.containsKey(task))
-							transition.put(task, new HashMap<HashableState, Map<HashableState,Double>>());
 						if(!transition.get(task).containsKey(hsprime))
 							transition.get(task).put(hsprime, new HashMap<HashableState, Double>());
 						if(!transition.get(task).get(hsprime).containsKey(hx))
@@ -373,8 +371,8 @@ public class RmaxQLearningAgent implements LearningAgent {
 							
 							double psprimeTospprime = childFromSp.get(hnext);
 							//pa (s'',x)
-							if(!transition.containsKey(task))
-								transition.put(task, new HashMap<HashableState, Map<HashableState,Double>>());
+//							if(!transition.containsKey(task))
+//								transition.put(task, new HashMap<HashableState, Map<HashableState,Double>>());
 							if(!transition.get(task).containsKey(hnext))
 								transition.get(task).put(hnext, new HashMap<HashableState, Double>());
 							if(!transition.get(task).get(hnext).containsKey(hx))
@@ -405,23 +403,19 @@ public class RmaxQLearningAgent implements LearningAgent {
 						}
 					}
 				}
-			}		
-				
-					
+			}	
+			if(!reward.containsKey(task))
+				reward.put(task, new HashMap<HashableState, Double>());
 			converged = false;
 			while(!converged){
 				double maxChange = 0;
 				
 				//temporary holders for batch updates
 				Map<HashableState, Double> tempReward = new HashMap<HashableState, Double>();
-	
-				if(!envolope.containsKey(task))
-					envolope.put(task, new ArrayList<HashableState>());
-				List<HashableState> envelopeA = envolope.get(task);
+//				if(!envolope.containsKey(task))
+//					envolope.put(task, new ArrayList<HashableState>());
+//				List<HashableState> envelopeA = envolope.get(task);
 				for(HashableState hsprime : envelopeA){
-					
-					if(!reward.containsKey(task))
-						reward.put(task, new HashMap<HashableState, Double>());
 					if(!reward.get(task).containsKey(hsprime))
 						reward.get(task).put(hsprime, Vmax);
 					double prevReward = reward.get(task).get(hsprime);
@@ -454,8 +448,8 @@ public class RmaxQLearningAgent implements LearningAgent {
 						if(task.t.terminal(hnext.s(), task.action))
 							continue;
 						
-						if(!reward.containsKey(task))
-							reward.put(task, new HashMap<HashableState, Double>());
+//						if(!reward.containsKey(task))
+//							reward.put(task, new HashMap<HashableState, Double>());
 						if(!reward.get(task).containsKey(hnext))
 							reward.get(task).put(hnext, Vmax);
 						double nextReward = reward.get(task).get(hnext);
@@ -473,14 +467,10 @@ public class RmaxQLearningAgent implements LearningAgent {
 					//find max change for value iteration
 					if(Math.abs(newReward - prevReward) > maxChange)
 						maxChange = Math.abs(newReward - prevReward);
-					
-					
-					
 				}
 //				System.out.println(maxChange);
 				if(maxChange < dynamicPrgEpsilon)
 					converged = true;
-				
 				//overwrite reward and transition
 				for(HashableState hashState : tempReward.keySet()){
 					this.reward.get(task).put(hashState, tempReward.get(hashState));
