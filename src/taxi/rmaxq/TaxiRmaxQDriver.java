@@ -1,6 +1,6 @@
 package taxi.rmaxq;
 
-import java.util.ArrayList;
+import java.util.ArrayList; 
 import java.util.List;
 
 import burlap.behavior.singleagent.Episode;
@@ -19,10 +19,10 @@ import burlap.mdp.singleagent.environment.SimulatedEnvironment;
 import burlap.mdp.singleagent.model.RewardFunction;
 import burlap.mdp.singleagent.oo.OOSADomain;
 import burlap.statehashing.HashableStateFactory;
-import burlap.statehashing.simple.SimpleHashableStateFactory;
 import burlap.visualizer.Visualizer;
 import rmaxq.framework.RmaxQLearningAgent;
 import rmaxq.framework.TaskNode;
+import state.hashing.simple.SimpleHashableStateFactory;
 import taxi.TaxiDomain;
 import taxi.TaxiRewardFunction;
 import taxi.TaxiTerminationFunction;
@@ -42,8 +42,8 @@ public class TaxiRmaxQDriver {
 
         TaxiDomain TDGen = new TaxiDomain(taxiRF, taxiTF);
         
-        TDGen.setTransitionDynamicsLikeFickleTaxiProlem();
-        TDGen.setFickleTaxi(true);
+//        TDGen.setTransitionDynamicsLikeFickleTaxiProlem();
+        TDGen.setFickleTaxi(false);
         TDGen.setIncludeFuel(false);
         OOSADomain td = TDGen.generateDomain();
         domain = td;
@@ -133,14 +133,14 @@ public class TaxiRmaxQDriver {
 //		QlearningState();
 		RmaxQLearningAgent RmaxQ = new RmaxQLearningAgent(root, hs, env.currentObservation(), 100, 5, 0.01);
 
-		long totalTime = 0;
-		for(int i = 1; i <= 10; i++){
-			Episode e = RmaxQ.runLearningEpisode(env);
-			e.write("output/episode_" + i);
-			totalTime +=RmaxQ.getTime() / 1000.0;
-			System.out.println("Episode " + i + " time " + RmaxQ.getTime() / 1000.0 + " average " + ((double)totalTime /(double)i ));
-			env.resetEnvironment();
-		}
+//		long totalTime = 0;
+//		for(int i = 1; i <= 100; i++){
+//			Episode e = RmaxQ.runLearningEpisode(env);
+//			e.write("output/episode_" + i);
+//			totalTime +=RmaxQ.getTime() / 1000.0;
+//			System.out.println("Episode " + i + " time " + RmaxQ.getTime() / 1000.0 + " average " + ((double)totalTime /(double)i ));
+//			env.resetEnvironment();
+//		}
 //		
 		runTests();
 		Visualizer v = TaxiVisualizer.getVisualizer(5, 5);

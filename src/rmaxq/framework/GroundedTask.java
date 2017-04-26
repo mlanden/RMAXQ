@@ -32,7 +32,7 @@ public class GroundedTask {
     public String actionName(){
         return action.actionName();
     }
-
+    
     @Override
     public boolean equals(Object other) {
         if (this == other) {
@@ -86,7 +86,7 @@ public class GroundedTask {
     @Override
     public int hashCode() {
         HashCodeBuilder hashCodeBuilder = new HashCodeBuilder(31, 7);
-        hashCodeBuilder.append(t).append(action);
+        hashCodeBuilder.append(action);//.append(t)
         return hashCodeBuilder.toHashCode();
     }
 }
