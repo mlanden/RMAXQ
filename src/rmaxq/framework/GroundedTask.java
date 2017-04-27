@@ -86,7 +86,7 @@ public class GroundedTask {
     @Override
     public int hashCode() {
         HashCodeBuilder hashCodeBuilder = new HashCodeBuilder(31, 7);
-        hashCodeBuilder.append(action);//.append(t)
+        hashCodeBuilder.append(action.actionName());//.append(t)
         return hashCodeBuilder.toHashCode();
     }
 }

@@ -19,7 +19,7 @@ public class TaxiRewardFunction implements RewardFunction {
 
     public double stepReward = -1.0;
     public double illegalAction = -10;
-    public double goalReward = +0;
+    public double goalReward = +20;
 
     TerminalFunction tf;
     Integer numPass = 0;

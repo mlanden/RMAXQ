@@ -133,16 +133,16 @@ public class TaxiRmaxQDriver {
 //		QlearningState();
 		RmaxQLearningAgent RmaxQ = new RmaxQLearningAgent(root, hs, env.currentObservation(), 100, 5, 0.01);
 
-//		long totalTime = 0;
-//		for(int i = 1; i <= 100; i++){
-//			Episode e = RmaxQ.runLearningEpisode(env);
-//			e.write("output/episode_" + i);
-//			totalTime +=RmaxQ.getTime() / 1000.0;
-//			System.out.println("Episode " + i + " time " + RmaxQ.getTime() / 1000.0 + " average " + ((double)totalTime /(double)i ));
-//			env.resetEnvironment();
-//		}
+		long totalTime = 0;
+		for(int i = 1; i <= 10; i++){
+			Episode e = RmaxQ.runLearningEpisode(env);
+			e.write("output/episode_" + i);
+			totalTime +=RmaxQ.getTime() / 1000.0;
+			System.out.println("Episode " + i + " time " + RmaxQ.getTime() / 1000.0 + " average " + ((double)totalTime /(double)i ));
+			env.resetEnvironment();
+		}
 //		
-		runTests();
+//		runTests();
 		Visualizer v = TaxiVisualizer.getVisualizer(5, 5);
 		EpisodeSequenceVisualizer ep= new EpisodeSequenceVisualizer(v, domain, "output/" );
 		ep.setDefaultCloseOperation(ep.EXIT_ON_CLOSE);
