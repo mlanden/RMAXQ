@@ -49,6 +49,8 @@ public class RmaxQLearningAgent implements LearningAgent {
 	//ta 
 	private Map<GroundedTask, List<HashableState>> terminal;
 
+	private Map<GroundedTask, Integer> actionTimestaps;
+	
 	private double dynamicPrgEpsilon;
 	private int threshold;
 	private TaskNode root;
@@ -58,6 +60,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 	private State initialState;	
 	private List<HashableState> reachableStates = new ArrayList<HashableState>();
 	private long time = 0;
+	private int timestep;
 
 	public RmaxQLearningAgent(TaskNode root, HashableStateFactory hs, State initState, double vmax, int threshold, double maxDelta){
 		this.root = root;
@@ -76,6 +79,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 		this.Vmax = vmax;
 		this.threshold = threshold;
 		this.initialState = initState;
+		this.actionTimestaps = new HashMap<GroundedTask, Integer>();
 		reachableStates = StateReachability.getReachableStates(initialState, root.getDomain(), hashingFactory);
 	}
 
@@ -90,7 +94,9 @@ public class RmaxQLearningAgent implements LearningAgent {
 		this.env = env;
 		Episode e = new Episode(initialState);
 		GroundedTask rootSolve = root.getApplicableGroundedTasks(env.currentObservation()).get(0);
-
+		timestep = 0;
+		actionTimestaps.clear();
+		
 		//look at equals in grounded task
 		time = System.currentTimeMillis();
 		HashableState hs = hashingFactory.hashState(env.currentObservation());
@@ -167,6 +173,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 			if(prob == null)
 				endProb.put(hsprime, 0.);
 
+			timestep++;
 			return e;
 		}else{ //task is composute
 			boolean terminal = false;
@@ -205,10 +212,22 @@ public class RmaxQLearningAgent implements LearningAgent {
 	}
 
 	public void computePolicy(HashableState hs, GroundedTask task){
+		
+		Integer aTime = actionTimestaps.get(task);
+		if(aTime == null){
+			aTime = 0;
+			actionTimestaps.put(task, aTime);
+		}
+		
 		List<HashableState> envolopA = envolope.get(task);
 		if(envolopA == null){
 			envolopA = new ArrayList<HashableState>();
 			envolope.put(task, envolopA);
+		}
+
+		if(aTime < timestep){
+			actionTimestaps.put(task, timestep);
+			envolopA.clear();
 		}
 		prepareEnvolope(hs, task);
 
@@ -234,6 +253,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 						maxDelta = Math.abs(oldQ - newQ);
 				}
 			}
+//			System.out.println("Compute policy " + maxDelta);
 			if(maxDelta < dynamicPrgEpsilon)
 				converged = true;
 		}
@@ -326,6 +346,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 					nSA = new HashMap<HashableState, Integer>();
 					nS.put(task, nSA);
 				}
+//				System.out.print(task.actionName() + " ");
 				for(HashableState hsprime : pas.keySet()){
 					//get n(s, a, s')
 					Integer n_sasp = nSA.get(hsprime);
@@ -335,9 +356,12 @@ public class RmaxQLearningAgent implements LearningAgent {
 					}
 
 					//set Pa(s, s') = n(s,a,s') / n(s, a)
-					double p_assp = n_sasp / n_sa;
+					double p_assp = (double)n_sasp / n_sa;
+//					if(p_assp > 0)
+//						System.out.print(p_assp + " ");
 					pas.put(hsprime, p_assp);
 				}
+//				System.out.println();
 			}
 		}else{
 			computePolicy(hs, task);
@@ -428,7 +452,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 						//set pa(s',x)
 						Pstosp.put(hx, newProb);
 					}
-//					System.out.println(maxChange);
+//					System.out.println("compute model " + maxChange);
 					if(maxChange < dynamicPrgEpsilon)
 						converged = true;
 				}
@@ -437,6 +461,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 	}
 
 	private double epuation_1(QProviderRmaxQ qp, HashableState hsprime, GroundedTask a) {
+//		System.out.println("Eq_1");
 		//Ra'(s')
 		Map<HashableState, Double> actionAR = reward.get(a);
 		if(actionAR == null){
@@ -472,6 +497,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 
 	private double equation_4(GroundedTask task, SolverDerivedPolicy taskFromPolicy, Map<HashableState, Double> rewtask,
 			HashableState hsprime, Map<HashableState, Double> childProbabilities) {
+//		System.out.println("Eq_4");
 		Action maxqAction = taskFromPolicy.action(hsprime.s());
 		GroundedTask childFromPolicy = groundedTaskMap.get(maxqAction.actionName());
 		if(childFromPolicy == null){
@@ -512,6 +538,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 
 	private double equation_5(GroundedTask task, Map<HashableState, Map<HashableState, Double>> probtask,
 			Map<HashableState, Double> childProbabilities, HashableState hx) {
+//		System.out.println("Eq_5");
 		Double childProbability = childProbabilities.get(hx);
 		if(childProbability == null){
 			childProbability = 0.;

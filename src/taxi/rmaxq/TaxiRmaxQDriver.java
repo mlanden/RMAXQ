@@ -35,6 +35,8 @@ public class TaxiRmaxQDriver {
 	
 	private static SimulatedEnvironment env;
 	private static OOSADomain domain;
+	private static TaskNode root;
+	private static HashableStateFactory hs;
 	
 	public static TaskNode setupHeirarcy(){
         TerminalFunction taxiTF = new TaxiTerminationFunction();
@@ -42,8 +44,9 @@ public class TaxiRmaxQDriver {
 
         TaxiDomain TDGen = new TaxiDomain(taxiRF, taxiTF);
         
-//        TDGen.setTransitionDynamicsLikeFickleTaxiProlem();
-        TDGen.setFickleTaxi(false);
+        TDGen.setTransitionDynamicsLikeFickleTaxiProlem();
+//        TDGen.setTransitionNondetirministicDynamics();
+        TDGen.setFickleTaxi(true);
         TDGen.setIncludeFuel(false);
         OOSADomain td = TDGen.generateDomain();
         domain = td;
@@ -53,7 +56,7 @@ public class TaxiRmaxQDriver {
 //        VisualActionObserver obs = new VisualActionObserver(td, TaxiVisualizer.getVisualizer(5, 5));
 //        obs.initGUI();
 //        env.addObservers(obs);
-        
+//        
         List<TaxiPassenger> passengers = ((TaxiState)s).passengers;
         List<TaxiLocation> locations = ((TaxiState)s).locations;
         String[] locationNames = new String[locations.size()];
@@ -111,43 +114,43 @@ public class TaxiRmaxQDriver {
 			
 			@Override
 			public LearningAgent generateAgent() {
-				TaskNode root = setupHeirarcy();
-				HashableStateFactory hs = new SimpleHashableStateFactory(true);
 				return new RmaxQLearningAgent(root, hs, env.currentObservation(), 100, 5, 0.01);
 			}
 		};
 		
-		LearningAlgorithmExperimenter exp = new LearningAlgorithmExperimenter(env, 1, 100, RmaxQ);
-		exp.setUpPlottingConfiguration(1000, 500, 2, 1000,
+		LearningAlgorithmExperimenter exp = new LearningAlgorithmExperimenter(env, 1, 1000, RmaxQ);
+		exp.setUpPlottingConfiguration(900, 500, 2, 1000,
 				TrialMode.MOST_RECENT_AND_AVERAGE,
 				PerformanceMetric.STEPS_PER_EPISODE,
-				PerformanceMetric.AVERAGE_EPISODE_REWARD);
+				PerformanceMetric.CUMULATIVE_REWARD_PER_EPISODE);
 
 		exp.startExperiment();
 	}
 
-	public static void main(String[] args) {
-		TaskNode root = setupHeirarcy();
-		HashableStateFactory hs = new SimpleHashableStateFactory(true);
+	private static void runEpisodes() {
 		
-//		QlearningState();
 		RmaxQLearningAgent RmaxQ = new RmaxQLearningAgent(root, hs, env.currentObservation(), 100, 5, 0.01);
-
 		long totalTime = 0;
-		for(int i = 1; i <= 10; i++){
+		List<Episode> eps = new ArrayList<Episode>();
+		for(int i = 1; i <= 30; i++){
 			Episode e = RmaxQ.runLearningEpisode(env);
-			e.write("output/episode_" + i);
+			eps.add(e);
 			totalTime +=RmaxQ.getTime() / 1000.0;
 			System.out.println("Episode " + i + " time " + RmaxQ.getTime() / 1000.0 + " average " + ((double)totalTime /(double)i ));
 			env.resetEnvironment();
 		}
-//		
-//		runTests();
 		Visualizer v = TaxiVisualizer.getVisualizer(5, 5);
-		EpisodeSequenceVisualizer ep= new EpisodeSequenceVisualizer(v, domain, "output/" );
+		EpisodeSequenceVisualizer ep= new EpisodeSequenceVisualizer(v, domain,eps );
 		ep.setDefaultCloseOperation(ep.EXIT_ON_CLOSE);
-
-//		runTests();
 	}
+	
+	public static void main(String[] args) {
+		root = setupHeirarcy();
+		hs = new SimpleHashableStateFactory(true);
+//		runEpisodes();
+	
+		runTests();
+	}
+
 
 }

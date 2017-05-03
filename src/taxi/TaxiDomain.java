@@ -243,10 +243,10 @@ public class TaxiDomain implements DomainGenerator{
      * has taken one move action location TransitionDynamics[initialGoalLocation][finalGoalLocation].
      */
     public void setTransitionDynamicsLikeFickleTaxiProlem(){
-        moveTransitionDynamics = new double[][]{{0.8, 0., 0.1, 0.1},
-                {0., 0.8, 0.1, 0.1},
-                {0.1, 0.1, 0.8, 0.0},
-                {0.1, 0.1, 0., 0.8}};
+//        moveTransitionDynamics = new double[][]{{0.8, 0., 0.1, 0.1},
+//                {0., 0.8, 0.1, 0.1},
+//                {0.1, 0.1, 0.8, 0.0},
+//                {0.1, 0.1, 0., 0.8}};
 
         fickleLocationDynamics = new double[4][4];
         for(int i = 0; i < 4; i++){
@@ -261,6 +261,12 @@ public class TaxiDomain implements DomainGenerator{
         }
     }
 
+    public void setTransitionNondetirministicDynamics(){
+        moveTransitionDynamics = new double[][]{{0.8, 0., 0.1, 0.1},
+                {0., 0.8, 0.1, 0.1},
+                {0.1, 0.1, 0.8, 0.0},
+                {0.1, 0.1, 0., 0.8}};
+    }
 
     /**
      * Will set the movement direction probabilities based on the action chosen. The index (0,1,2,3) indicates the
