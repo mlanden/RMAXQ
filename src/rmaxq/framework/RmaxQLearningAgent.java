@@ -321,7 +321,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 					Ra = new HashMap<HashableState, Double>();
 					reward.put(task, Ra);
 				}
-				double newR = r_sa / n_sa;
+				double newR = (double)r_sa / n_sa;
 				Ra.put(hs, newR);
 
 				//get Pa(s, .)
@@ -519,9 +519,10 @@ public class RmaxQLearningAgent implements LearningAgent {
 
 		double weightedReward = 0;
 		// equation 4
+		List<HashableState> terminals = getTerminalStates(task);
 		for(HashableState hnext : childProbabilities.keySet()){
 			//get Ra(nextstate)
-			if(task.t.terminal(hnext.s(), task.action))
+			if(!terminals.contains(hnext))
 				continue;
 
 			Double nextReward = rewtask.get(hnext);

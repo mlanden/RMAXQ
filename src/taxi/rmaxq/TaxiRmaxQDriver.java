@@ -50,7 +50,7 @@ public class TaxiRmaxQDriver {
         TDGen.setIncludeFuel(false);
         OOSADomain td = TDGen.generateDomain();
         domain = td;
-        State s = TaxiDomain.getSmallClassicState(domain, false);
+        State s = TaxiDomain.getClassicState(domain, false);
         env = new SimulatedEnvironment(td, s);
 
 //        VisualActionObserver obs = new VisualActionObserver(td, TaxiVisualizer.getVisualizer(5, 5));
@@ -147,9 +147,9 @@ public class TaxiRmaxQDriver {
 	public static void main(String[] args) {
 		root = setupHeirarcy();
 		hs = new SimpleHashableStateFactory(true);
-//		runEpisodes();
+		runEpisodes();
 	
-		runTests();
+//		runTests();
 	}
 
 
