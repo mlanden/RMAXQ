@@ -518,11 +518,10 @@ public class RmaxQLearningAgent implements LearningAgent {
 		}
 
 		double weightedReward = 0;
-		// equation 4
-		List<HashableState> terminals = getTerminalStates(task);
+//		List<HashableState> terminals = getTerminalStates(task);
 		for(HashableState hnext : childProbabilities.keySet()){
 			//get Ra(nextstate)
-			if(!terminals.contains(hnext))
+			if(task.t.terminal(hnext.s(), task.action))
 				continue;
 
 			Double nextReward = rewtask.get(hnext);
@@ -549,6 +548,7 @@ public class RmaxQLearningAgent implements LearningAgent {
 		double weightedTransition = 0;
 		//sum over all p pia(s) (s',.)
 		// eq 5
+//		List<HashableState> terminals = getTerminalStates(task);
 		for(HashableState hnext: childProbabilities.keySet()){
 			if(task.t.terminal(hnext.s(), task.action))
 				continue;

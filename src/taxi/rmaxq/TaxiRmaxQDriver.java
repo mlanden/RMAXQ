@@ -1,6 +1,6 @@
 package taxi.rmaxq;
 
-import java.util.ArrayList; 
+import java.util.ArrayList;
 import java.util.List;
 
 import burlap.behavior.singleagent.Episode;
@@ -11,7 +11,6 @@ import burlap.behavior.singleagent.auxiliary.performance.TrialMode;
 import burlap.behavior.singleagent.learning.LearningAgent;
 import burlap.behavior.singleagent.learning.LearningAgentFactory;
 import burlap.behavior.singleagent.learning.modellearning.rmax.PotentialShapedRMax;
-import burlap.behavior.singleagent.learning.tdmethods.QLearning;
 import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.action.ActionType;
 import burlap.mdp.core.state.State;
