@@ -1,48 +1,31 @@
 package cleanup;
 
-import amdp.amdpframework.GroundedPropSC;
-import burlap.behavior.policy.Policy;
-import burlap.behavior.policy.PolicyUtils;
-import burlap.behavior.singleagent.Episode;
-import burlap.behavior.singleagent.auxiliary.EpisodeSequenceVisualizer;
-import burlap.behavior.singleagent.planning.stochastic.rtdp.BoundedRTDP;
-import burlap.behavior.valuefunction.ConstantValueFunction;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import burlap.debugtools.RandomFactory;
 import burlap.mdp.auxiliary.DomainGenerator;
-import burlap.mdp.auxiliary.common.GoalConditionTF;
 import burlap.mdp.auxiliary.common.NullTermination;
-import burlap.mdp.auxiliary.stateconditiontest.StateConditionTest;
 import burlap.mdp.core.Domain;
-import burlap.mdp.core.StateTransitionProb;
 import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.action.Action;
 import burlap.mdp.core.action.ActionType;
 import burlap.mdp.core.action.UniversalActionType;
 import burlap.mdp.core.oo.OODomain;
-import burlap.mdp.core.oo.propositional.GroundedProp;
 import burlap.mdp.core.oo.propositional.PropositionalFunction;
 import burlap.mdp.core.oo.state.OOState;
 import burlap.mdp.core.oo.state.ObjectInstance;
-import burlap.mdp.core.state.MutableState;
 import burlap.mdp.core.state.State;
-import burlap.mdp.singleagent.common.GoalBasedRF;
 import burlap.mdp.singleagent.common.UniformCostRF;
-import burlap.mdp.singleagent.environment.EnvironmentOutcome;
 import burlap.mdp.singleagent.model.FactoredModel;
 import burlap.mdp.singleagent.model.RewardFunction;
-import burlap.mdp.singleagent.model.statemodel.FullStateModel;
 import burlap.mdp.singleagent.oo.OOSADomain;
-import burlap.shell.visual.VisualExplorer;
-import burlap.statehashing.simple.SimpleHashableStateFactory;
-import burlap.visualizer.Visualizer;
-import cleanup.state.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
-import static burlap.domain.singleagent.mountaincar.MountainCar.ATT_X;
+import cleanup.state.CleanupAgent;
+import cleanup.state.CleanupBlock;
+import cleanup.state.CleanupDoor;
+import cleanup.state.CleanupRoom;
+import cleanup.state.CleanupState;
 
 /**
  * Created by ngopalan on 8/24/16.
@@ -699,152 +682,6 @@ public class CleanupDomain implements DomainGenerator {
 
         return max;
     }
-
-
-
-
-    public static void main(String [] args){
-        boolean runGroundLevelBoundedRTDP = true;
-        Random rand = RandomFactory.getMapped(0);
-
-        if(false){
-            double lockProb = 0.5;
-
-            PropositionalFunction pf = new PF_InRegion(CleanupDomain.PF_BLOCK_IN_ROOM, new String[]{CLASS_BLOCK, CLASS_ROOM}, false);
-
-
-            GroundedProp gp =  new GroundedProp(pf,new String[]{"block0", "room1"});
-
-            GroundedPropSC l0sc = new GroundedPropSC(gp);
-            GoalBasedRF l0rf = new GoalBasedRF(l0sc, 1., 0.);
-            GoalConditionTF l0tf = new GoalConditionTF(l0sc);
-            CleanupDomain dgen = new CleanupDomain(l0rf,l0tf, rand);
-            dgen.includeDirectionAttribute(true);
-            dgen.includePullAction(true);
-            dgen.includeWallPF_s(true);
-            dgen.includeLockableDoors(true);
-            dgen.setLockProbability(lockProb);
-            OOSADomain domain = dgen.generateDomain();
-
-            State s = CleanupDomain.getClassicState(true);
-
-            FixedDoorCleanupEnv env = new FixedDoorCleanupEnv(domain, s);
-            EnvironmentOutcome eo0 = env.executeAction(domain.getAction(ACTION_NORTH).allApplicableActions(s).get(0));
-            EnvironmentOutcome eo1 = env.executeAction(domain.getAction(ACTION_SOUTH).allApplicableActions(s).get(0));
-            EnvironmentOutcome eo2 = env.executeAction(domain.getAction(ACTION_EAST).allApplicableActions(s).get(0));
-            EnvironmentOutcome eo3 = env.executeAction(domain.getAction(ACTION_WEST).allApplicableActions(s).get(0));
-
-            Episode ea = new Episode(s);
-            ea.transition(eo0);
-            ea.transition(eo1);
-            ea.transition(eo2);
-            ea.transition(eo3);
-            Visualizer v = CleanupVisualiser.getVisualizer("amdp/data/resources/robotImages");
-            //		System.out.println(ea.getState(0).toString());
-            new EpisodeSequenceVisualizer(v, domain, Arrays.asList(ea));
-
-
-        }
-
-
-        if(false){
-            double lockProb = 0.5;
-
-//            StateConditionTest sc = new GroundedPropSC(new GroundedProp(domain.getPropFunction(CleanupWorld.PF_BLOCK_IN_ROOM),  new String[]{"block0", "room1"}));
-
-//            RewardFunction heuristicRF = new PullCostGoalRF(sc, 1., 0.);
-
-            PropositionalFunction pf = new PF_InRegion(CleanupDomain.PF_BLOCK_IN_ROOM, new String[]{CLASS_BLOCK, CLASS_ROOM}, false);
-
-
-            GroundedProp gp =  new GroundedProp(pf,new String[]{"block0", "room1"});
-
-            GroundedPropSC l0sc = new GroundedPropSC(gp);
-            GoalBasedRF l0rf = new GoalBasedRF(l0sc, 1., 0.);
-            GoalConditionTF l0tf = new GoalConditionTF(l0sc);
-
-            CleanupDomain dgen = new CleanupDomain(l0rf,l0tf, rand);
-            dgen.includeDirectionAttribute(true);
-            dgen.includePullAction(true);
-            dgen.includeWallPF_s(true);
-            dgen.includeLockableDoors(true);
-            dgen.setLockProbability(lockProb);
-            OOSADomain domain = dgen.generateDomain();
-
-            State s = CleanupDomain.getClassicState(true);
-
-
-
-            FixedDoorCleanupEnv env = new FixedDoorCleanupEnv(domain, s);
-
-
-            long startTime = System.currentTimeMillis();
-
-            ConstantValueFunction heuristic = new ConstantValueFunction(1.);//CleanupDomainDriver.getL0Heuristic(s, heuristicRF);
-            BoundedRTDP brtd = new BoundedRTDP(domain, 0.99, new SimpleHashableStateFactory(false), new ConstantValueFunction(0.0), heuristic, 0.01, 500);
-            brtd.setMaxRolloutDepth(50);
-            brtd.toggleDebugPrinting(false);
-            Policy P = brtd.planFromState(s);
-
-            long endTime = System.currentTimeMillis();
-            long duration = (endTime - startTime);
-            System.out.println("total time: " + duration);
-            Episode ea = PolicyUtils.rollout(P,env,100);
-
-            Visualizer v = CleanupVisualiser.getVisualizer("amdp/data/resources/robotImages");
-            //		System.out.println(ea.getState(0).toString());
-            new EpisodeSequenceVisualizer(v, domain, Arrays.asList(ea));
-        }
-        if(true){
-
-
-
-            CleanupDomain dgen = new CleanupDomain();
-            dgen.includeDirectionAttribute(true);
-            dgen.includePullAction(true);
-            dgen.includeWallPF_s(true);
-            dgen.includeLockableDoors(true);
-            dgen.setLockProbability(0.5);
-            OOSADomain domain = dgen.generateDomain();
-
-            State s = CleanupDomain.getClassicState(true);
-
-			/*ObjectInstance b2 = new ObjectInstance(domain.getObjectClass(CLASSBLOCK), CLASSBLOCK+1);
-		s.addObject(b2);
-		setBlock(s, 1, 3, 2, "moon", "red");*/
-
-            Visualizer v = CleanupVisualiser.getVisualizer("amdp/data/resources/robotImages");
-            VisualExplorer exp = new VisualExplorer(domain, v, s);
-
-            exp.addKeyAction("w", ACTION_NORTH,"");
-            exp.addKeyAction("s", ACTION_SOUTH,"");
-            exp.addKeyAction("d", ACTION_EAST,"");
-            exp.addKeyAction("a", ACTION_WEST,"");
-            exp.addKeyAction("r", ACTION_PULL,"");
-
-            exp.initGUI();
-
-//            List<StateTransitionProb> tps = domain.getAction(ACTION_SOUTH).getAssociatedGroundedAction().getTransitions(s);
-//            for(TransitionProbability tp : tps){
-//                System.out.println(tp.s.toString());
-//                System.out.println("----------------");
-//            }
-//
-//            System.out.println("========================");
-//
-//            State s2 = s.copy();
-//            CleanupWorld.setAgent(s2, 6, 5);
-//            tps = domain.getAction(ACTION_SOUTH).getAssociatedGroundedAction().getTransitions(s2);
-//            for(TransitionProbability tp : tps){
-//                System.out.println(tp.s.toString());
-//                System.out.println("----------------");
-//            }
-        }
-
-    }
-
-
-
 }
 
 

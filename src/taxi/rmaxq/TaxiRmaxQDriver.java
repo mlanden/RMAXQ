@@ -10,6 +10,7 @@ import burlap.behavior.singleagent.auxiliary.performance.PerformanceMetric;
 import burlap.behavior.singleagent.auxiliary.performance.TrialMode;
 import burlap.behavior.singleagent.learning.LearningAgent;
 import burlap.behavior.singleagent.learning.LearningAgentFactory;
+import burlap.behavior.singleagent.learning.modellearning.rmax.PotentialShapedRMax;
 import burlap.behavior.singleagent.learning.tdmethods.QLearning;
 import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.action.ActionType;
@@ -38,7 +39,7 @@ public class TaxiRmaxQDriver {
 	private static TaskNode root;
 	private static HashableStateFactory hs;
 	
-	public static TaskNode setupHeirarcy(){
+	public static TaskNode taxiHeirarcy(){
         TerminalFunction taxiTF = new TaxiTerminationFunction();
         RewardFunction taxiRF = new TaxiRewardFunction(1,taxiTF);
 
@@ -50,7 +51,7 @@ public class TaxiRmaxQDriver {
         TDGen.setIncludeFuel(false);
         OOSADomain td = TDGen.generateDomain();
         domain = td;
-        State s = TaxiDomain.getClassicState(domain, false);
+        State s = TaxiDomain.getSmallClassicState(domain, false);
         env = new SimulatedEnvironment(td, s);
 
 //        VisualActionObserver obs = new VisualActionObserver(td, TaxiVisualizer.getVisualizer(5, 5));
@@ -117,8 +118,18 @@ public class TaxiRmaxQDriver {
 				return new RmaxQLearningAgent(root, hs, env.currentObservation(), 100, 5, 0.01);
 			}
 		};
-		
-		LearningAlgorithmExperimenter exp = new LearningAlgorithmExperimenter(env, 1, 1000, RmaxQ);
+		LearningAgentFactory Rmax = new LearningAgentFactory() {
+			
+			public String getAgentName() {
+				return "R-max";
+			}
+			
+			@Override
+			public LearningAgent generateAgent() {
+				return new PotentialShapedRMax(domain, 1, hs, 100, 5, 0.01, 1);
+			}
+		};
+		LearningAlgorithmExperimenter exp = new LearningAlgorithmExperimenter(env, 1, 50, RmaxQ, Rmax);
 		exp.setUpPlottingConfiguration(900, 500, 2, 1000,
 				TrialMode.MOST_RECENT_AND_AVERAGE,
 				PerformanceMetric.STEPS_PER_EPISODE,
@@ -145,11 +156,11 @@ public class TaxiRmaxQDriver {
 	}
 	
 	public static void main(String[] args) {
-		root = setupHeirarcy();
+		root = taxiHeirarcy();
 		hs = new SimpleHashableStateFactory(true);
-		runEpisodes();
+//		runEpisodes();
 	
-//		runTests();
+		runTests();
 	}
 
 
